@@ -2,36 +2,35 @@
 
 @theme {
   --font-display: "Newsreader", Georgia, "Times New Roman", serif;
-  --font-body: "DM Sans", system-ui, sans-serif;
-  --font-mono: "DM Mono", ui-monospace, monospace;
+  --font-body: "Inter", system-ui, sans-serif;
 
-  --color-bg: #f6f4f0;
-  --color-bg-accent: #ebe7df;
-  --color-surface: #fffcf8;
-  --color-surface-raised: #ffffff;
-  --color-ink: #1c1b18;
-  --color-ink-secondary: #5c5a54;
-  --color-ink-muted: #8a877f;
-  --color-border: #1c1b181a;
-  --color-border-strong: #1c1b182e;
-  --color-accent: #0b6464;
-  --color-accent-hover: #084f4f;
-  --color-accent-soft: #0b646417;
-  --color-accent-ring: #0b646447;
-  --color-approved-bg: #e8f5ec;
+  --color-bg: #f5f3f1;
+  --color-bg-warm: #fdfcfc;
+  --color-surface: #fdfcfc;
+  --color-surface-muted: #f0eeeb;
+  --color-ink: #080808;
+  --color-ink-secondary: #18181b;
+  --color-ink-muted: #5c5c5c;
+  --color-border: #08080814;
+  --color-border-strong: #08080824;
+
+  --color-teal-deep: #0a1a10;
+  --color-teal-mid: #101e21;
+  --color-teal-light: #1a3320;
+
+  --color-lime: #b0f31f;
+  --color-lime-hover: #9ae400;
+  --color-lime-soft: #b0f31f1f;
+
+  --color-approved-bg: #e4f7e8;
   --color-approved-text: #1a5c32;
   --color-pending-bg: #faf0df;
   --color-pending-text: #7a4f12;
   --color-rejected-bg: #fce9e7;
   --color-rejected-text: #8b2320;
   --color-error: #b42318;
-  --color-btn-text: #f8fffe;
-
-  --shadow-sm: 0 1px 2px rgba(28, 27, 24, 0.04);
-  --shadow-card: 0 1px 3px rgba(28, 27, 24, 0.05), 0 8px 28px rgba(28, 27, 24, 0.07);
 
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
-
   --animate-fade-up: fade-up 0.6s var(--ease-out) both;
 
   @keyframes fade-up {
@@ -55,24 +54,10 @@
 
   body {
     @apply m-0 min-h-screen bg-bg;
-    background:
-      radial-gradient(ellipse 80% 50% at 50% -10%, var(--color-accent-soft), transparent),
-      radial-gradient(ellipse 60% 40% at 100% 0%, rgba(235, 231, 223, 0.7), transparent),
-      var(--color-bg);
-  }
-
-  body::before {
-    content: "";
-    position: fixed;
-    inset: 0;
-    pointer-events: none;
-    opacity: 0.35;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
-    z-index: 0;
   }
 
   #root {
-    @apply relative z-10;
+    @apply relative;
   }
 }
 
@@ -84,4 +69,30 @@
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
+}
+
+@utility hero-bg {
+  background-color: var(--color-teal-deep);
+  background-image:
+    radial-gradient(
+      ellipse 28% 90% at 18% 0%,
+      rgb(26 51 32 / 0.55),
+      transparent 72%
+    ),
+    radial-gradient(
+      ellipse 32% 95% at 50% -5%,
+      rgb(16 30 33 / 0.85),
+      transparent 70%
+    ),
+    radial-gradient(
+      ellipse 28% 90% at 82% 0%,
+      rgb(26 51 32 / 0.55),
+      transparent 72%
+    ),
+    linear-gradient(
+      180deg,
+      var(--color-teal-deep) 0%,
+      var(--color-teal-mid) 45%,
+      var(--color-teal-deep) 100%
+    );
 }

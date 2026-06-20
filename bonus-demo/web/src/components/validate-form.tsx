@@ -12,6 +12,7 @@ import {
   mutedClass,
   panelDescriptionClass,
   panelTitleClass,
+  sectionEyebrowClass,
   statusBadgeClass,
 } from "../lib/ui.js";
 
@@ -81,6 +82,7 @@ export function ValidateForm() {
       className={`${cardClass} [animation-delay:0.16s]`}
       aria-labelledby="validate-heading"
     >
+      <p className={sectionEyebrowClass}>Validación individual</p>
       <h2 id="validate-heading" className={panelTitleClass}>
         Validar gasto
       </h2>
@@ -129,7 +131,7 @@ export function ValidateForm() {
             <label className={labelClass}>
               Fecha
               <input
-                className={`${inputClass} font-mono text-[0.8125rem]`}
+                className={inputClass}
                 type="date"
                 value={form.fecha}
                 onChange={(event) => updateField("fecha", event.target.value)}
@@ -202,7 +204,7 @@ export function ValidateForm() {
             <label className={labelClass}>
               Fecha de referencia
               <input
-                className={`${inputClass} font-mono text-[0.8125rem]`}
+                className={inputClass}
                 type="date"
                 value={form.referenceDate}
                 onChange={(event) =>
@@ -226,25 +228,23 @@ export function ValidateForm() {
 
       {result ? (
         <div
-          className="mt-5 animate-fade-up rounded-xl border border-border bg-bg px-4.5 py-4 [animation-duration:0.4s]"
+          className="mt-5 animate-fade-up rounded-2xl border border-border bg-surface-muted px-4.5 py-4 [animation-duration:0.4s]"
           aria-live="polite"
         >
           <div className="mb-3 flex flex-wrap items-center gap-2.5">
             <span className={statusBadgeClass(result.status)}>
               {result.status}
             </span>
-            <span className="font-mono text-xs text-ink-muted">
-              {result.gasto_id}
-            </span>
+            <span className="text-xs text-ink-muted">{result.gasto_id}</span>
           </div>
           {result.alertas.length > 0 ? (
             <ul className="m-0 list-none space-y-1 p-0">
               {result.alertas.map((alerta) => (
                 <li
                   key={`${alerta.codigo}-${alerta.mensaje}`}
-                  className="border-l-2 border-border-strong py-2 pl-3.5 text-sm"
+                  className="border-l-2 border-teal-mid/20 py-2 pl-3.5 text-sm"
                 >
-                  <strong className="font-mono text-xs font-medium text-ink-secondary">
+                  <strong className="text-xs font-semibold text-ink-secondary">
                     {alerta.codigo}
                   </strong>{" "}
                   — {alerta.mensaje}
