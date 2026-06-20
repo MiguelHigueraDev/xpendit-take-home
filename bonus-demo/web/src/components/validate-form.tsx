@@ -1,9 +1,19 @@
 import { FormEvent, useState } from "react";
+import { validateExpense, type ValidationResult } from "../api.js";
 import {
-  validateExpense,
-  type Estado,
-  type ValidationResult,
-} from "../api.js";
+  buttonClass,
+  cardClass,
+  errorClass,
+  fieldsetClass,
+  formRowClass,
+  inputClass,
+  labelClass,
+  legendClass,
+  mutedClass,
+  panelDescriptionClass,
+  panelTitleClass,
+  statusBadgeClass,
+} from "../lib/ui.js";
 
 const DEFAULT_FORM = {
   gastoId: "g_demo",
@@ -17,17 +27,6 @@ const DEFAULT_FORM = {
   costCenter: "sales_team",
   referenceDate: "2026-06-19",
 };
-
-function statusClass(status: Estado): string {
-  switch (status) {
-    case "APROBADO":
-      return "status-badge status-approved";
-    case "PENDIENTE":
-      return "status-badge status-pending";
-    case "RECHAZADO":
-      return "status-badge status-rejected";
-  }
-}
 
 export function ValidateForm() {
   const [form, setForm] = useState(DEFAULT_FORM);
@@ -78,130 +77,182 @@ export function ValidateForm() {
   }
 
   return (
-    <section className="panel">
-      <h2>Validar gasto</h2>
-      <p className="panel-description">
+    <section
+      className={`${cardClass} [animation-delay:0.16s]`}
+      aria-labelledby="validate-heading"
+    >
+      <h2 id="validate-heading" className={panelTitleClass}>
+        Validar gasto
+      </h2>
+      <p className={panelDescriptionClass}>
         Envía un gasto contra la política por defecto usando tasas de respaldo
         offline.
       </p>
 
-      <form className="form-grid" onSubmit={handleSubmit}>
-        <fieldset>
-          <legend>Gasto</legend>
-          <label>
-            ID
-            <input
-              value={form.gastoId}
-              onChange={(event) => updateField("gastoId", event.target.value)}
-              required
-            />
-          </label>
-          <label>
-            Monto
-            <input
-              value={form.monto}
-              onChange={(event) => updateField("monto", event.target.value)}
-              required
-            />
-          </label>
-          <label>
-            Moneda
-            <input
-              value={form.moneda}
-              onChange={(event) => updateField("moneda", event.target.value)}
-              required
-            />
-          </label>
-          <label>
-            Fecha
-            <input
-              type="date"
-              value={form.fecha}
-              onChange={(event) => updateField("fecha", event.target.value)}
-              required
-            />
-          </label>
-          <label>
-            Categoría
-            <input
-              value={form.categoria}
-              onChange={(event) => updateField("categoria", event.target.value)}
-              required
-            />
-          </label>
+      <form onSubmit={handleSubmit}>
+        <fieldset className={fieldsetClass}>
+          <legend className={legendClass}>Gasto</legend>
+          <div className={formRowClass}>
+            <label className={labelClass}>
+              ID
+              <input
+                className={inputClass}
+                value={form.gastoId}
+                onChange={(event) =>
+                  updateField("gastoId", event.target.value)
+                }
+                required
+              />
+            </label>
+            <label className={labelClass}>
+              Monto
+              <input
+                className={inputClass}
+                value={form.monto}
+                onChange={(event) => updateField("monto", event.target.value)}
+                required
+              />
+            </label>
+            <label className={labelClass}>
+              Moneda
+              <input
+                className={inputClass}
+                value={form.moneda}
+                onChange={(event) =>
+                  updateField("moneda", event.target.value)
+                }
+                required
+              />
+            </label>
+          </div>
+          <div className={formRowClass}>
+            <label className={labelClass}>
+              Fecha
+              <input
+                className={`${inputClass} font-mono text-[0.8125rem]`}
+                type="date"
+                value={form.fecha}
+                onChange={(event) => updateField("fecha", event.target.value)}
+                required
+              />
+            </label>
+            <label className={labelClass}>
+              Categoría
+              <input
+                className={inputClass}
+                value={form.categoria}
+                onChange={(event) =>
+                  updateField("categoria", event.target.value)
+                }
+                required
+              />
+            </label>
+          </div>
         </fieldset>
 
-        <fieldset>
-          <legend>Empleado</legend>
-          <label>
-            ID
-            <input
-              value={form.empleadoId}
-              onChange={(event) => updateField("empleadoId", event.target.value)}
-              required
-            />
-          </label>
-          <label>
-            Nombre
-            <input
-              value={form.nombre}
-              onChange={(event) => updateField("nombre", event.target.value)}
-              required
-            />
-          </label>
-          <label>
-            Apellido
-            <input
-              value={form.apellido}
-              onChange={(event) => updateField("apellido", event.target.value)}
-              required
-            />
-          </label>
-          <label>
-            Centro de costo
-            <input
-              value={form.costCenter}
-              onChange={(event) =>
-                updateField("costCenter", event.target.value)
-              }
-              required
-            />
-          </label>
-          <label>
-            Fecha de referencia
-            <input
-              type="date"
-              value={form.referenceDate}
-              onChange={(event) =>
-                updateField("referenceDate", event.target.value)
-              }
-            />
-          </label>
+        <fieldset className={fieldsetClass}>
+          <legend className={legendClass}>Empleado</legend>
+          <div className={formRowClass}>
+            <label className={labelClass}>
+              ID
+              <input
+                className={inputClass}
+                value={form.empleadoId}
+                onChange={(event) =>
+                  updateField("empleadoId", event.target.value)
+                }
+                required
+              />
+            </label>
+            <label className={labelClass}>
+              Nombre
+              <input
+                className={inputClass}
+                value={form.nombre}
+                onChange={(event) =>
+                  updateField("nombre", event.target.value)
+                }
+                required
+              />
+            </label>
+            <label className={labelClass}>
+              Apellido
+              <input
+                className={inputClass}
+                value={form.apellido}
+                onChange={(event) =>
+                  updateField("apellido", event.target.value)
+                }
+                required
+              />
+            </label>
+          </div>
+          <div className={formRowClass}>
+            <label className={labelClass}>
+              Centro de costo
+              <input
+                className={inputClass}
+                value={form.costCenter}
+                onChange={(event) =>
+                  updateField("costCenter", event.target.value)
+                }
+                required
+              />
+            </label>
+            <label className={labelClass}>
+              Fecha de referencia
+              <input
+                className={`${inputClass} font-mono text-[0.8125rem]`}
+                type="date"
+                value={form.referenceDate}
+                onChange={(event) =>
+                  updateField("referenceDate", event.target.value)
+                }
+              />
+            </label>
+          </div>
         </fieldset>
 
-        <button type="submit" disabled={loading}>
-          {loading ? "Validando…" : "Validar"}
+        <button type="submit" className={buttonClass} disabled={loading}>
+          {loading ? "Validando…" : "Validar gasto"}
         </button>
       </form>
 
-      {error ? <p className="error">{error}</p> : null}
+      {error ? (
+        <p className={errorClass} role="alert">
+          {error}
+        </p>
+      ) : null}
 
       {result ? (
-        <div className="result-card">
-          <div className="result-header">
-            <span className={statusClass(result.status)}>{result.status}</span>
-            <span className="muted">gasto_id: {result.gasto_id}</span>
+        <div
+          className="mt-5 animate-fade-up rounded-xl border border-border bg-bg px-4.5 py-4 [animation-duration:0.4s]"
+          aria-live="polite"
+        >
+          <div className="mb-3 flex flex-wrap items-center gap-2.5">
+            <span className={statusBadgeClass(result.status)}>
+              {result.status}
+            </span>
+            <span className="font-mono text-xs text-ink-muted">
+              {result.gasto_id}
+            </span>
           </div>
           {result.alertas.length > 0 ? (
-            <ul className="alert-list">
+            <ul className="m-0 list-none space-y-1 p-0">
               {result.alertas.map((alerta) => (
-                <li key={`${alerta.codigo}-${alerta.mensaje}`}>
-                  <strong>{alerta.codigo}</strong> — {alerta.mensaje}
+                <li
+                  key={`${alerta.codigo}-${alerta.mensaje}`}
+                  className="border-l-2 border-border-strong py-2 pl-3.5 text-sm"
+                >
+                  <strong className="font-mono text-xs font-medium text-ink-secondary">
+                    {alerta.codigo}
+                  </strong>{" "}
+                  — {alerta.mensaje}
                 </li>
               ))}
             </ul>
           ) : (
-            <p className="muted">Sin alertas.</p>
+            <p className={mutedClass}>Sin alertas.</p>
           )}
         </div>
       ) : null}

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { AnalyzePanel } from "./components/analyze-panel.js";
 import { ValidateForm } from "./components/validate-form.js";
 import { fetchPolicy, type PoliticaResponse } from "./api.js";
+import { cardClass, errorClass, mutedClass } from "./lib/ui.js";
 
 export function App() {
   const [policy, setPolicy] = useState<PoliticaResponse | null>(null);
@@ -19,49 +20,91 @@ export function App() {
       });
   }, []);
 
+  const categories = policy
+    ? Object.keys(policy.limites_por_categoria)
+    : [];
+
   return (
-    <div className="app">
-      <header className="header">
-        <h1>Motor de Reglas Xpendit</h1>
-        <p className="subtitle">
+    <div className="mx-auto max-w-[1080px] px-6 py-10 pb-16 max-[480px]:px-4 max-[480px]:py-7 max-[480px]:pb-12">
+      <header className="mb-8 animate-fade-up">
+        <p className="mb-3 inline-flex items-center gap-2 font-mono text-xs font-medium tracking-widest text-accent uppercase before:h-px before:w-5 before:bg-current before:opacity-50 before:content-['']">
+          Demo Bonus
+        </p>
+        <h1 className="font-display text-[clamp(1.875rem,4vw,2.5rem)] leading-[1.15] font-medium tracking-tight">
+          Motor de Reglas Xpendit
+        </h1>
+        <p className="mt-3.5 max-w-[52ch] text-[1.0625rem] text-ink-secondary">
           Valida gastos individuales o analiza un lote CSV usando el motor
           central vía HTTP.
         </p>
       </header>
 
-      <section className="policy-card">
-        <h2>Política activa</h2>
+      <section
+        className={`${cardClass} [animation-delay:0.08s]`}
+        aria-labelledby="policy-heading"
+      >
+        <h2
+          id="policy-heading"
+          className="font-display text-xl font-medium tracking-tight"
+        >
+          Política activa
+        </h2>
         {policyError ? (
-          <p className="error">{policyError}</p>
+          <p className={errorClass} role="alert">
+            {policyError}
+          </p>
         ) : policy ? (
-          <dl className="policy-grid">
-            <div>
-              <dt>Moneda base</dt>
-              <dd>{policy.moneda_base}</dd>
+          <dl className="mt-4 grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-3">
+            <div className="rounded-xl border border-border bg-bg px-4 py-3.5">
+              <dt className="font-mono text-[0.6875rem] font-medium tracking-wider text-ink-muted uppercase">
+                Moneda base
+              </dt>
+              <dd className="mt-1.5 text-[0.9375rem]">{policy.moneda_base}</dd>
             </div>
-            <div>
-              <dt>Umbrales de antigüedad</dt>
-              <dd>
+            <div className="rounded-xl border border-border bg-bg px-4 py-3.5">
+              <dt className="font-mono text-[0.6875rem] font-medium tracking-wider text-ink-muted uppercase">
+                Umbrales de antigüedad
+              </dt>
+              <dd className="mt-1.5 text-[0.9375rem]">
                 PENDIENTE después de {policy.limite_antiguedad.pendiente_dias}{" "}
                 días, RECHAZADO después de{" "}
                 {policy.limite_antiguedad.rechazado_dias} días
               </dd>
             </div>
-            <div>
-              <dt>Categorías</dt>
-              <dd>{Object.keys(policy.limites_por_categoria).join(", ")}</dd>
+            <div className="rounded-xl border border-border bg-bg px-4 py-3.5">
+              <dt className="font-mono text-[0.6875rem] font-medium tracking-wider text-ink-muted uppercase">
+                Categorías
+              </dt>
+              <dd className="mt-1.5 text-[0.9375rem]">
+                <span className="mt-1.5 flex flex-wrap gap-1.5">
+                  {categories.map((category) => (
+                    <span
+                      key={category}
+                      className="inline-block rounded-full bg-accent-soft px-2.5 py-0.5 font-mono text-xs font-medium text-accent"
+                    >
+                      {category}
+                    </span>
+                  ))}
+                </span>
+              </dd>
             </div>
-            <div>
-              <dt>Categoría desconocida</dt>
-              <dd>{policy.categoria_desconocida}</dd>
+            <div className="rounded-xl border border-border bg-bg px-4 py-3.5">
+              <dt className="font-mono text-[0.6875rem] font-medium tracking-wider text-ink-muted uppercase">
+                Categoría desconocida
+              </dt>
+              <dd className="mt-1.5 text-[0.9375rem]">
+                {policy.categoria_desconocida}
+              </dd>
             </div>
           </dl>
         ) : (
-          <p className="muted">Cargando política…</p>
+          <p className={mutedClass} aria-live="polite">
+            Cargando política…
+          </p>
         )}
       </section>
 
-      <main className="panels">
+      <main className="grid gap-5 min-[900px]:grid-cols-2 min-[900px]:items-start">
         <ValidateForm />
         <AnalyzePanel />
       </main>
