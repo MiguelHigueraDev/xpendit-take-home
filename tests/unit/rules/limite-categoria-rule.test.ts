@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { ALERT_CODES } from "../../../src/domain/codes.js";
-import { evaluateLimiteCategoriaRule } from "../../../src/rules/limiteCategoriaRule.js";
+import { evaluateLimiteCategoriaRule } from "../../../src/rules/limite-categoria-rule.js";
 import {
   createGasto,
   defaultPolitica,

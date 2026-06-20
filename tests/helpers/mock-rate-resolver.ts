@@ -1,5 +1,5 @@
-import type { RateResolver } from "../../src/batch/batchRateResolver.js";
-import { InMemoryRateProvider } from "../../src/services/rateProvider.js";
+import type { RateResolver } from "../../src/batch/batch-rate-resolver.js";
+import { InMemoryRateProvider } from "../../src/services/rate-provider.js";
 import { mockExchangeRates } from "../fixtures.js";
 
 /**

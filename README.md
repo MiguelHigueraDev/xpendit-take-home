@@ -6,8 +6,8 @@ El proyecto está dividido en **tres partes** que se apoyan una sobre otra:
 
 | Parte | Qué hace | Carpeta principal |
 |-------|----------|-------------------|
-| **1** | Lógica pura de validación (sin red) | `src/rules/`, `src/services/expenseValidator.ts` |
-| **2** | Integración con Open Exchange Rates | `src/services/openExchangeRatesClient.ts` |
+| **1** | Lógica pura de validación (sin red) | `src/rules/`, `src/services/expense-validator.ts` |
+| **2** | Integración con Open Exchange Rates | `src/services/open-exchange-rates-client.ts` |
 | **3** | Análisis por lotes del CSV + reporte | `src/batch/` |
 
 ---
@@ -232,7 +232,7 @@ Si un gasto tiene categoría sin límite configurado (ej. `software`, `lodging`)
 
 ### 10. Anomalías separadas de las reglas de política
 
-Duplicados exactos y montos negativos se detectan en `anomalyDetector.ts`, **fuera** del motor de reglas.
+Duplicados exactos y montos negativos se detectan en `anomaly-detector.ts`, **fuera** del motor de reglas.
 
 | Tipo | Criterio | ¿Cambia el status? |
 |------|----------|-------------------|
@@ -245,7 +245,7 @@ Duplicados exactos y montos negativos se detectan en `anomalyDetector.ts`, **fue
 
 ### 11. CLI testeable
 
-`analyzeCli.ts` separa la lógica del CLI de `analyze.ts` (entry point):
+`analyze-cli.ts` separa la lógica del CLI de `analyze.ts` (entry point):
 
 - **Parseo de argumentos** → `parseAnalyzeArgs()`
 - **Orquestación** → `runAnalyze()` con dependencias inyectables (filesystem, env)
@@ -260,9 +260,9 @@ Duplicados exactos y montos negativos se detectan en `anomalyDetector.ts`, **fue
 | Tipo | Carpeta | Qué cubre |
 |------|---------|-----------|
 | **Unitarias** | `tests/unit/` | Cada regla, validador, cliente API, CSV, CLI — sin red |
-| **E2E** | `tests/e2e/` | Pipeline completo sobre `gastos_historicos.csv` |
+| **E2E** | `tests/e2e/` | Pipeline completo sobre `gastos-historicos.csv` |
 
-El test e2e principal (`gastosHistoricos.test.ts`) es un **golden file**:
+El test e2e principal (`gastos-historicos.test.ts`) es un **golden file**:
 
 - Los 50 gastos se validan con tasas mock y fecha fija `2026-06-19`
 - Se verifica el desglose exacto: 9 APROBADO / 17 PENDIENTE / 24 RECHAZADO
@@ -321,12 +321,12 @@ const result = validator.validate(
 npm run demo:rates
 ```
 
-O programáticamente con `ExchangeRateService` + `OpenExchangeRatesClient` (ver `examples/validateWithLiveRates.ts`).
+O programáticamente con `ExchangeRateService` + `OpenExchangeRatesClient` (ver `examples/validate-with-live-rates.ts`).
 
 ### Parte 3 — Analizador de lotes
 
 ```bash
-# Default: gastos_historicos.csv → ANALISIS.md
+# Default: gastos-historicos.csv → ANALISIS.md
 npm run analyze
 
 # Offline, fecha fija, sin escribir archivo
@@ -365,10 +365,10 @@ data/
   fallback-rates.json
 policy.json          # Política de gastos (default del analizador)
 examples/
-  validateWithLiveRates.ts
+  validate-with-live-rates.ts
 tests/
   unit/            # Pruebas por módulo (sin red)
-  e2e/             # Golden tests sobre gastos_historicos.csv
+  e2e/             # Golden tests sobre gastos-historicos.csv
   helpers/         # Mock rate resolver compartido
   fixtures/        # CSV y datos de prueba
 ANALISIS.md        # Reporte generado por Parte 3

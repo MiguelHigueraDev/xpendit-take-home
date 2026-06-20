@@ -1,8 +1,8 @@
 import { describe, expect, it, vi } from "vitest";
 import { toMoney } from "../../../src/domain/money.js";
-import { BatchRateResolver } from "../../../src/batch/batchRateResolver.js";
-import { InMemoryRateProvider } from "../../../src/services/rateProvider.js";
-import type { ExchangeRateService } from "../../../src/services/exchangeRateService.js";
+import { BatchRateResolver } from "../../../src/batch/batch-rate-resolver.js";
+import { InMemoryRateProvider } from "../../../src/services/rate-provider.js";
+import type { ExchangeRateService } from "../../../src/services/exchange-rate-service.js";
 import { mockExchangeRates } from "../../fixtures.js";
 
 describe("BatchRateResolver", () => {

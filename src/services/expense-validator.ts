@@ -12,13 +12,13 @@ import type {
   Rule,
   ValidationResult,
 } from "../domain/types.js";
-import { evaluateAntiguedadRule } from "../rules/antiguedadRule.js";
-import { evaluateCentroCostoRule } from "../rules/centroCostoRule.js";
-import { evaluateLimiteCategoriaRule } from "../rules/limiteCategoriaRule.js";
+import { evaluateAntiguedadRule } from "../rules/antiguedad-rule.js";
+import { evaluateCentroCostoRule } from "../rules/centro-costo-rule.js";
+import { evaluateLimiteCategoriaRule } from "../rules/limite-categoria-rule.js";
 import type { Clock } from "./clock.js";
 import { SystemClock } from "./clock.js";
-import type { RateProvider } from "./rateProvider.js";
-import { resolveVerdicts } from "./verdictResolver.js";
+import type { RateProvider } from "./rate-provider.js";
+import { resolveVerdicts } from "./verdict-resolver.js";
 
 /** Configuration options for {@link ExpenseValidator}. */
 export interface ExpenseValidatorOptions {

@@ -2,13 +2,13 @@ import type { Politica } from "../domain/types.js";
 import { parsePolitica } from "../domain/schemas.js";
 import type { Clock } from "../services/clock.js";
 import { FixedClock } from "../services/clock.js";
-import { ExpenseValidator } from "../services/expenseValidator.js";
+import { ExpenseValidator } from "../services/expense-validator.js";
 import {
   detectAnomalies,
   getAnomaliesForGasto,
-} from "./anomalyDetector.js";
-import type { RateResolver } from "./batchRateResolver.js";
-import { loadExpensesFromCsv } from "./csvLoader.js";
+} from "./anomaly-detector.js";
+import type { RateResolver } from "./batch-rate-resolver.js";
+import { loadExpensesFromCsv } from "./csv-loader.js";
 import { defaultPolitica, defaultReferenceDate } from "./policy.js";
 import type {
   BatchAnalysisReport,

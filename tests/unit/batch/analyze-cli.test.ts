@@ -11,7 +11,7 @@ import {
   renderAnalyzeHelp,
   runAnalyze,
   serializeBatchReport,
-} from "../../../src/batch/analyzeCli.js";
+} from "../../../src/batch/analyze-cli.js";
 import { MissingApiKeyError } from "../../../src/config/env.js";
 import { defaultPolitica } from "../../../src/batch/policy.js";
 import { referenceDate } from "../../fixtures.js";
@@ -55,7 +55,7 @@ describe("parseAnalyzeArgs", () => {
 
   it("uses defaults when no arguments are provided", () => {
     expect(parseAnalyzeArgs([], projectRoot)).toEqual({
-      csvPath: "/project/gastos_historicos.csv",
+      csvPath: "/project/gastos-historicos.csv",
       outputPath: "/project/ANALISIS.md",
       referenceDate: undefined,
       mockRates: false,

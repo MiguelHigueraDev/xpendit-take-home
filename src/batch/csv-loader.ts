@@ -5,7 +5,7 @@ import { moneySchema } from "../domain/money.js";
 import { isoDateStringSchema } from "../validation/primitives.js";
 import type { CsvRowError, ParsedExpenseRow } from "./types.js";
 
-/** Raw CSV row shape from gastos_historicos.csv. */
+/** Raw CSV row shape from gastos-historicos.csv. */
 export const csvRowSchema = z.object({
   gasto_id: z.string().trim().min(1),
   empleado_id: z.string().trim().min(1),

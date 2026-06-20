@@ -1,7 +1,7 @@
 import { parseIsoDateString } from "../domain/schemas.js";
-import type { RateProvider } from "./rateProvider.js";
-import { InMemoryRateProvider } from "./rateProvider.js";
-import { OpenExchangeRatesClient } from "./openExchangeRatesClient.js";
+import type { RateProvider } from "./rate-provider.js";
+import { InMemoryRateProvider } from "./rate-provider.js";
+import { OpenExchangeRatesClient } from "./open-exchange-rates-client.js";
 
 /** Cache key used for the latest-rate snapshot. */
 const LATEST_CACHE_KEY = "__latest__";

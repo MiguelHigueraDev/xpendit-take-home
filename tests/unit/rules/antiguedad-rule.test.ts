@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { ALERT_CODES } from "../../../src/domain/codes.js";
-import { evaluateAntiguedadRule } from "../../../src/rules/antiguedadRule.js";
+import { evaluateAntiguedadRule } from "../../../src/rules/antiguedad-rule.js";
 import {
   createGasto,
   defaultPolitica,

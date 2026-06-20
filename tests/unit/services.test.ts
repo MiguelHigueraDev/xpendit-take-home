@@ -10,8 +10,8 @@ import { toRateTable } from "../fixtures.js";
 import {
   InMemoryRateProvider,
   RateNotFoundError,
-} from "../../src/services/rateProvider.js";
-import { ExpenseValidator } from "../../src/services/expenseValidator.js";
+} from "../../src/services/rate-provider.js";
+import { ExpenseValidator } from "../../src/services/expense-validator.js";
 import {
   createGasto,
   defaultPolitica,

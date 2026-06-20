@@ -55,7 +55,7 @@ describe("E2E: analyze.ts CLI process", () => {
     expect(result.stdout).toContain("--mock");
   });
 
-  it("runs offline against gastos_historicos.csv and writes markdown", () => {
+  it("runs offline against gastos-historicos.csv and writes markdown", () => {
     const dir = mkdtempSync(join(tmpdir(), "analyze-spawn-"));
     tempDirs.push(dir);
 
@@ -66,7 +66,7 @@ describe("E2E: analyze.ts CLI process", () => {
       "-d",
       "2026-06-19",
       "-i",
-      join(projectRoot, "gastos_historicos.csv"),
+      join(projectRoot, "gastos-historicos.csv"),
       "-o",
       outputPath,
     ]);
@@ -95,7 +95,7 @@ describe("E2E: analyze.ts CLI process", () => {
       "-d",
       "2026-06-19",
       "-i",
-      join(projectRoot, "gastos_historicos.csv"),
+      join(projectRoot, "gastos-historicos.csv"),
     ]);
 
     expect(result.status).toBe(0);
@@ -121,7 +121,7 @@ describe("E2E: analyze.ts CLI process", () => {
       "-d",
       "2026-06-19",
       "-i",
-      join(projectRoot, "gastos_historicos.csv"),
+      join(projectRoot, "gastos-historicos.csv"),
     ]);
 
     expect(result.status).toBe(1);

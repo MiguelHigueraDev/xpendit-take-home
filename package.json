@@ -12,7 +12,7 @@
     "test:e2e": "vitest run tests/e2e",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
-    "demo:rates": "tsx examples/validateWithLiveRates.ts",
+    "demo:rates": "tsx examples/validate-with-live-rates.ts",
     "analyze": "tsx src/batch/analyze.ts"
   },
   "dependencies": {

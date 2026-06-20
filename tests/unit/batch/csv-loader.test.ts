@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { toMoney } from "../../../src/domain/money.js";
-import { loadExpensesFromCsv } from "../../../src/batch/csvLoader.js";
+import { loadExpensesFromCsv } from "../../../src/batch/csv-loader.js";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 

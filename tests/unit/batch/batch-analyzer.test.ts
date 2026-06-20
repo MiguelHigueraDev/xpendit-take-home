@@ -1,9 +1,9 @@
 import { describe, expect, it, vi } from "vitest";
-import { BatchAnalyzer } from "../../../src/batch/batchAnalyzer.js";
+import { BatchAnalyzer } from "../../../src/batch/batch-analyzer.js";
 import { FixedClock } from "../../../src/services/clock.js";
-import { ExpenseValidator } from "../../../src/services/expenseValidator.js";
+import { ExpenseValidator } from "../../../src/services/expense-validator.js";
 import { referenceDate } from "../../fixtures.js";
-import { createMockRateResolver } from "../../helpers/mockRateResolver.js";
+import { createMockRateResolver } from "../../helpers/mock-rate-resolver.js";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 
@@ -44,7 +44,7 @@ describe("BatchAnalyzer", () => {
     const OriginalExpenseValidator = ExpenseValidator;
 
     vi.spyOn(
-      await import("../../../src/services/expenseValidator.js"),
+      await import("../../../src/services/expense-validator.js"),
       "ExpenseValidator",
     ).mockImplementation(function (...args) {
       constructorCalls += 1;

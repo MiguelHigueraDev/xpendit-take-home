@@ -2,11 +2,11 @@ import { z } from "zod";
 import { positiveRateSchema } from "../domain/money.js";
 import type { Money } from "../domain/money.js";
 import { parseIsoDateString } from "../domain/schemas.js";
-import type { ExchangeRateService } from "../services/exchangeRateService.js";
+import type { ExchangeRateService } from "../services/exchange-rate-service.js";
 import {
   InMemoryRateProvider,
   type RateProvider,
-} from "../services/rateProvider.js";
+} from "../services/rate-provider.js";
 import { parseOrThrow } from "../validation/parse.js";
 import type { BatchRateResolution } from "./types.js";
 

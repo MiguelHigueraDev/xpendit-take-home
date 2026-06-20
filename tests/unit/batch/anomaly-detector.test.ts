@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { detectAnomalies } from "../../../src/batch/anomalyDetector.js";
-import { loadExpensesFromCsv } from "../../../src/batch/csvLoader.js";
+import { detectAnomalies } from "../../../src/batch/anomaly-detector.js";
+import { loadExpensesFromCsv } from "../../../src/batch/csv-loader.js";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { ALERT_CODES } from "../../../src/domain/codes.js";

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { ALERT_CODES } from "../../../src/domain/codes.js";
-import { evaluateCentroCostoRule } from "../../../src/rules/centroCostoRule.js";
+import { evaluateCentroCostoRule } from "../../../src/rules/centro-costo-rule.js";
 import {
   createGasto,
   defaultPolitica,

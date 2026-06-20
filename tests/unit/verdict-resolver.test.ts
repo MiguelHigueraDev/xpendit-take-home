@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { ALERT_CODES } from "../../src/domain/codes.js";
-import { resolveVerdicts } from "../../src/services/verdictResolver.js";
+import { resolveVerdicts } from "../../src/services/verdict-resolver.js";
 
 describe("resolveVerdicts", () => {
   it("returns PENDIENTE with no alerts when no rules apply", () => {

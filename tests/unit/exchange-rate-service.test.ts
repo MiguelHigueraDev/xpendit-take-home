@@ -1,10 +1,10 @@
 import { describe, expect, it, vi } from "vitest";
 import { toMoney } from "../../src/domain/money.js";
-import { ExchangeRateService } from "../../src/services/exchangeRateService.js";
+import { ExchangeRateService } from "../../src/services/exchange-rate-service.js";
 import {
   ExchangeRateApiError,
   OpenExchangeRatesClient,
-} from "../../src/services/openExchangeRatesClient.js";
+} from "../../src/services/open-exchange-rates-client.js";
 
 function createMockClient() {
   return {

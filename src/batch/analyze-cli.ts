@@ -4,15 +4,15 @@ import { loadEnv, MissingApiKeyError } from "../config/env.js";
 import { parsePolitica } from "../domain/schemas.js";
 import type { Politica } from "../domain/types.js";
 import { FixedClock, parseIsoDate } from "../services/clock.js";
-import { ExchangeRateService } from "../services/exchangeRateService.js";
-import { OpenExchangeRatesClient } from "../services/openExchangeRatesClient.js";
+import { ExchangeRateService } from "../services/exchange-rate-service.js";
+import { OpenExchangeRatesClient } from "../services/open-exchange-rates-client.js";
 import { ValidationError } from "../validation/errors.js";
-import { BatchAnalyzer } from "./batchAnalyzer.js";
+import { BatchAnalyzer } from "./batch-analyzer.js";
 import {
   BatchRateResolver,
   parseFallbackRatesFile,
   type RateResolver,
-} from "./batchRateResolver.js";
+} from "./batch-rate-resolver.js";
 import {
   DEFAULT_POLICY_FILENAME,
   defaultReferenceDate,
@@ -21,7 +21,7 @@ import { renderAnalysisMarkdown, renderConsoleSummary } from "./reporting.js";
 import type { BatchAnalysisReport } from "./types.js";
 
 /** Default CSV filename relative to the project root. */
-export const DEFAULT_CSV_FILENAME = "gastos_historicos.csv";
+export const DEFAULT_CSV_FILENAME = "gastos-historicos.csv";
 
 /** Default markdown output filename relative to the project root. */
 export const DEFAULT_OUTPUT_FILENAME = "ANALISIS.md";
@@ -76,7 +76,7 @@ export function renderAnalyzeHelp(): string {
 Analiza un CSV de gastos históricos y genera un reporte ANALISIS.md.
 
 Argumentos posicionales:
-  csv                 Ruta al archivo CSV (default: gastos_historicos.csv)
+  csv                 Ruta al archivo CSV (default: gastos-historicos.csv)
   salida.md           Ruta del reporte markdown (default: ANALISIS.md)
 
 Opciones:
@@ -94,7 +94,7 @@ Opciones:
 Ejemplos:
   npm run analyze
   npm run analyze -- --mock -d 2026-06-19
-  npm run analyze -- -i gastos_historicos.csv -o ANALISIS.md --offline
+  npm run analyze -- -i gastos-historicos.csv -o ANALISIS.md --offline
   npm run analyze -- --json --no-write --mock
 `;
 }

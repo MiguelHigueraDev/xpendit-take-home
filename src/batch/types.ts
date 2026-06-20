@@ -36,7 +36,7 @@ export interface DuplicateGroup {
 
 /** Result of resolving rate providers for a batch of dates. */
 export interface BatchRateResolution {
-  providersByDate: Map<string, import("../services/rateProvider.js").RateProvider>;
+  providersByDate: Map<string, import("../services/rate-provider.js").RateProvider>;
   uniqueDates: string[];
   liveDates: string[];
   fallbackDates: string[];

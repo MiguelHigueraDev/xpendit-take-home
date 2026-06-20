@@ -3,7 +3,7 @@ import { Decimal } from "decimal.js";
 import {
   ExchangeRateApiError,
   OpenExchangeRatesClient,
-} from "../../src/services/openExchangeRatesClient.js";
+} from "../../src/services/open-exchange-rates-client.js";
 
 function createMockFetch(response: {
   ok: boolean;

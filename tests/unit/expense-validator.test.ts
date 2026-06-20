@@ -1,11 +1,11 @@
 import { describe, expect, it } from "vitest";
 import { ALERT_CODES } from "../../src/domain/codes.js";
 import { FixedClock } from "../../src/services/clock.js";
-import { ExpenseValidator } from "../../src/services/expenseValidator.js";
+import { ExpenseValidator } from "../../src/services/expense-validator.js";
 import {
   InMemoryRateProvider,
   RateNotFoundError,
-} from "../../src/services/rateProvider.js";
+} from "../../src/services/rate-provider.js";
 import {
   createGasto,
   defaultPolitica,

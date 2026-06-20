@@ -1,21 +1,21 @@
 import { readFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { describe, expect, it, beforeAll } from "vitest";
-import { BatchAnalyzer } from "../../src/batch/batchAnalyzer.js";
+import { BatchAnalyzer } from "../../src/batch/batch-analyzer.js";
 import { ALERT_CODES, type AlertCode } from "../../src/domain/codes.js";
 import type { BatchAnalysisReport } from "../../src/batch/types.js";
 import type { Estado } from "../../src/domain/types.js";
 import { FixedClock } from "../../src/services/clock.js";
-import { createMockRateResolver } from "../helpers/mockRateResolver.js";
+import { createMockRateResolver } from "../helpers/mock-rate-resolver.js";
 import { referenceDate } from "../fixtures.js";
 
 const projectRoot = resolve(import.meta.dirname, "../..");
 const historicalCsv = readFileSync(
-  join(projectRoot, "gastos_historicos.csv"),
+  join(projectRoot, "gastos-historicos.csv"),
   "utf-8",
 );
 
-/** Expected status counts for gastos_historicos.csv (ref 2026-06-19, mock FX rates). */
+/** Expected status counts for gastos-historicos.csv (ref 2026-06-19, mock FX rates). */
 const GOLDEN_STATUS_BREAKDOWN: Record<Estado, number> = {
   APROBADO: 9,
   PENDIENTE: 17,
@@ -120,7 +120,7 @@ function normalizeDuplicateGroups(report: BatchAnalysisReport) {
     .sort((left, right) => left.gasto_ids[0]!.localeCompare(right.gasto_ids[0]!));
 }
 
-describe("E2E: gastos_historicos.csv batch analysis", () => {
+describe("E2E: gastos-historicos.csv batch analysis", () => {
   let report: BatchAnalysisReport;
 
   beforeAll(async () => {

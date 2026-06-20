@@ -1,11 +1,11 @@
 import { readFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { describe, expect, it } from "vitest";
-import { BatchAnalyzer } from "../../src/batch/batchAnalyzer.js";
+import { BatchAnalyzer } from "../../src/batch/batch-analyzer.js";
 import {
   BatchRateResolver,
   parseFallbackRatesFile,
-} from "../../src/batch/batchRateResolver.js";
+} from "../../src/batch/batch-rate-resolver.js";
 import { renderAnalysisMarkdown } from "../../src/batch/reporting.js";
 import { FixedClock } from "../../src/services/clock.js";
 import { referenceDate } from "../fixtures.js";
@@ -15,7 +15,7 @@ const projectRoot = resolve(import.meta.dirname, "../..");
 describe("E2E: batch analyzer with fallback rates (offline CLI path)", () => {
   it("mirrors analyze.ts offline behavior using data/fallback-rates.json", async () => {
     const csvContent = readFileSync(
-      join(projectRoot, "gastos_historicos.csv"),
+      join(projectRoot, "gastos-historicos.csv"),
       "utf-8",
     );
     const fallback = parseFallbackRatesFile(
