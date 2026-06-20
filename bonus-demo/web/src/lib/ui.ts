@@ -13,7 +13,7 @@ export const panelDescriptionClass =
   "mb-5 text-[0.9375rem] leading-relaxed text-ink-muted";
 
 export const inputClass =
-  "rounded-xl border border-border-strong bg-bg-warm px-3 py-2.5 text-ink transition-[border-color,box-shadow] duration-150 hover:border-ink-muted focus:border-teal-mid focus:outline-none focus:shadow-[0_0_0_3px_rgb(16_30_33_/_0.12)]";
+  "w-full rounded-xl border border-border-strong bg-bg-warm px-3 py-2.5 text-ink transition-[border-color,box-shadow] duration-150 hover:border-ink-muted focus:border-teal-mid focus:outline-none focus:shadow-[0_0_0_3px_rgb(16_30_33_/_0.12)]";
 
 export const labelClass =
   "mb-3 flex flex-col gap-1.5 text-[0.8125rem] font-medium text-ink-secondary";
