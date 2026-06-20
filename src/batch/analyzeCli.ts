@@ -13,7 +13,10 @@ import {
   parseFallbackRatesFile,
   type RateResolver,
 } from "./batchRateResolver.js";
-import { defaultReferenceDate } from "./policy.js";
+import {
+  DEFAULT_POLICY_FILENAME,
+  defaultReferenceDate,
+} from "./policy.js";
 import { renderAnalysisMarkdown, renderConsoleSummary } from "./reporting.js";
 import type { BatchAnalysisReport } from "./types.js";
 
@@ -82,7 +85,7 @@ Opciones:
   -o, --output <path>         Ruta del reporte markdown
   -d, --reference-date <date> Fecha de referencia ISO (YYYY-MM-DD)
   --mock, --offline            Usa tasas de respaldo locales (sin API)
-  --policy <path>             Archivo JSON con la política de gastos
+  --policy <path>             Archivo JSON con la política (default: policy.json)
   --fallback-rates <path>     Archivo JSON de tasas de respaldo
   --no-write                  No escribe el archivo de salida
   --json                      Imprime el reporte completo como JSON en stdout
@@ -135,7 +138,7 @@ export function parseAnalyzeArgs(
   let outputFromFlag = false;
   let referenceDate: string | undefined;
   let mockRates = false;
-  let policyPath: string | undefined;
+  let policyPath = resolveProjectPath(projectRoot, DEFAULT_POLICY_FILENAME);
   let fallbackRatesPath = resolveProjectPath(
     projectRoot,
     DEFAULT_FALLBACK_RATES_PATH,
@@ -294,9 +297,10 @@ export async function runAnalyze(
   deps: AnalyzeCliDependencies = DEFAULT_DEPENDENCIES,
 ): Promise<AnalyzeCliResult> {
   const csvContent = deps.readFile(options.csvPath, "utf-8");
-  const politica = options.policyPath
-    ? loadPolicyFromFile(options.policyPath, deps.readFile)
-    : undefined;
+  const policyPath =
+    options.policyPath ??
+    resolveProjectPath(deps.projectRoot, DEFAULT_POLICY_FILENAME);
+  const politica = loadPolicyFromFile(policyPath, deps.readFile);
 
   const referenceDate = options.referenceDate
     ? parseIsoDate(options.referenceDate)

@@ -211,9 +211,9 @@ La política (`Politica`) se congela en runtime:
 parsePolitica(input) → validar con Zod → clonar → deepFreeze → objeto inmutable
 ```
 
-- `defaultPolitica` se congela al cargar el módulo
+- `defaultPolitica` se carga desde `policy.json` en la raíz del proyecto y se congela al importar el módulo
 - Mutar la política en runtime lanza `TypeError`
-- También se puede cargar desde JSON con `--policy`
+- El CLI usa `policy.json` por defecto; se puede sobreescribir con `--policy`
 
 **Por qué:** en un lote de 50 gastos, todos deben evaluarse contra la **misma** política. Un cambio accidental a mitad del batch corrompería los resultados.
 
@@ -342,7 +342,7 @@ npm run analyze -- --policy mi-politica.json --json --mock
 | `-o, --output <path>` | Ruta del reporte markdown |
 | `-d, --reference-date <date>` | Fecha de referencia ISO (`YYYY-MM-DD`) |
 | `--mock, --offline` | Modo offline: tasas de `data/fallback-rates.json` (requerido sin API key) |
-| `--policy <path>` | Política JSON personalizada |
+| `--policy <path>` | Política JSON (default: `policy.json`) |
 | `--fallback-rates <path>` | Tasas de respaldo alternativas |
 | `--no-write` | No escribe `ANALISIS.md` |
 | `--json` | Imprime reporte JSON en stdout |
@@ -363,6 +363,7 @@ src/
   batch/           # CSV, anomalías, analizador, reporting, CLI
 data/
   fallback-rates.json
+policy.json          # Política de gastos (default del analizador)
 examples/
   validateWithLiveRates.ts
 tests/

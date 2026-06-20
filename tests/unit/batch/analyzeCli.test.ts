@@ -1,5 +1,6 @@
+import { readFileSync } from "node:fs";
 import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
-import { dirname, join } from "node:path";
+import { dirname, join, resolve } from "node:path";
 import { tmpdir } from "node:os";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import {
@@ -14,6 +15,12 @@ import {
 import { MissingApiKeyError } from "../../../src/config/env.js";
 import { defaultPolitica } from "../../../src/batch/policy.js";
 import { referenceDate } from "../../fixtures.js";
+
+const projectRootForFixtures = resolve(import.meta.dirname, "../../..");
+const committedPolicyJson = readFileSync(
+  join(projectRootForFixtures, "policy.json"),
+  "utf-8",
+);
 
 const sampleCsv = `gasto_id,empleado_id,empleado_nombre,empleado_apellido,empleado_cost_center,categoria,monto,moneda,fecha
 g_001,e_002,Bruno,Soto,sales_team,food,55,USD,2026-06-04
@@ -52,7 +59,7 @@ describe("parseAnalyzeArgs", () => {
       outputPath: "/project/ANALISIS.md",
       referenceDate: undefined,
       mockRates: false,
-      policyPath: undefined,
+      policyPath: "/project/policy.json",
       fallbackRatesPath: "/project/data/fallback-rates.json",
       writeReport: true,
       jsonOutput: false,
@@ -119,7 +126,7 @@ describe("parseAnalyzeArgs", () => {
       outputPath: "/project/report.md",
       referenceDate: undefined,
       mockRates: false,
-      policyPath: undefined,
+      policyPath: "/project/policy.json",
       fallbackRatesPath: "/project/data/fallback-rates.json",
       writeReport: true,
       jsonOutput: false,
@@ -245,14 +252,17 @@ describe("serializeBatchReport", () => {
     const csvPath = join(dir, "input.csv");
     const outputPath = join(dir, "ANALISIS.md");
     const fallbackPath = join(dir, "fallback.json");
+    const policyPath = join(dir, "policy.json");
     writeFileSync(csvPath, sampleCsv, "utf-8");
     writeFileSync(fallbackPath, fallbackRatesJson, "utf-8");
+    writeFileSync(policyPath, committedPolicyJson, "utf-8");
 
     const deps = {
       projectRoot: dir,
       readFile: (path: string) => {
         if (path === csvPath) return sampleCsv;
         if (path === fallbackPath) return fallbackRatesJson;
+        if (path === policyPath) return committedPolicyJson;
         throw new Error(`ENOENT: ${path}`);
       },
       writeFile: vi.fn(),
@@ -311,6 +321,7 @@ describe("runAnalyze", () => {
     const outputPath = join(dir, "ANALISIS.md");
     const fallbackPath = join(dir, "fallback.json");
     const policyPath = join(dir, "policy.json");
+    const policyContent = overrides.policyJson ?? committedPolicyJson;
 
     writeFileSync(csvPath, overrides.csvContent ?? sampleCsv, "utf-8");
     writeFileSync(
@@ -318,19 +329,13 @@ describe("runAnalyze", () => {
       overrides.fallbackJson ?? fallbackRatesJson,
       "utf-8",
     );
-
-    if (overrides.policyJson) {
-      writeFileSync(policyPath, overrides.policyJson, "utf-8");
-    }
+    writeFileSync(policyPath, policyContent, "utf-8");
 
     const files = new Map<string, string>([
       [csvPath, overrides.csvContent ?? sampleCsv],
       [fallbackPath, overrides.fallbackJson ?? fallbackRatesJson],
+      [policyPath, policyContent],
     ]);
-
-    if (overrides.policyJson) {
-      files.set(policyPath, overrides.policyJson);
-    }
 
     const written = new Map<string, string>();
 
@@ -472,12 +477,16 @@ describe("mainAnalyze", () => {
     const outputPath = join(dir, "ANALISIS.md");
     const fallbackPath = join(dir, "fallback.json");
 
+    const policyPath = join(dir, "policy.json");
+
     writeFileSync(csvPath, csvContent, "utf-8");
     writeFileSync(fallbackPath, fallbackRatesJson, "utf-8");
+    writeFileSync(policyPath, committedPolicyJson, "utf-8");
 
     const files = new Map<string, string>([
       [csvPath, csvContent],
       [fallbackPath, fallbackRatesJson],
+      [policyPath, committedPolicyJson],
     ]);
     const written = new Map<string, string>();
 
