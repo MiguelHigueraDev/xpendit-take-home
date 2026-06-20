@@ -55,4 +55,59 @@ describe("reporting", () => {
     expect(markdown).toContain("## Optimización de llamadas a Open Exchange Rates");
     expect(markdown).toContain("21 llamadas evitadas");
   });
+
+  it("lists every duplicate group without truncation", () => {
+    const markdown = renderAnalysisMarkdown({
+      ...sampleReport,
+      duplicateGroups: [
+        {
+          monto: toMoney(50),
+          moneda: "USD",
+          fecha: "2026-06-04",
+          gasto_ids: ["g_001", "g_011"],
+        },
+        {
+          monto: toMoney(120),
+          moneda: "USD",
+          fecha: "2026-05-30",
+          gasto_ids: ["g_002", "g_012"],
+        },
+        {
+          monto: toMoney(120),
+          moneda: "USD",
+          fecha: "2026-03-16",
+          gasto_ids: ["g_025", "g_029"],
+        },
+        {
+          monto: toMoney(70),
+          moneda: "USD",
+          fecha: "2026-06-04",
+          gasto_ids: ["g_036", "g_041"],
+        },
+        {
+          monto: toMoney(150),
+          moneda: "USD",
+          fecha: "2026-03-16",
+          gasto_ids: ["g_037", "g_039", "g_047"],
+        },
+        {
+          monto: toMoney(130),
+          moneda: "EUR",
+          fecha: "2026-04-25",
+          gasto_ids: ["g_038", "g_050"],
+        },
+        {
+          monto: toMoney(90),
+          moneda: "USD",
+          fecha: "2026-06-09",
+          gasto_ids: ["g_042", "g_043", "g_044"],
+        },
+      ],
+    });
+
+    expect(markdown).toContain("### Duplicados exactos (7 grupos)");
+    expect(markdown).toContain("g_001, g_011");
+    expect(markdown).toContain("g_038, g_050");
+    expect(markdown).toContain("g_042, g_043, g_044");
+  });
 });

@@ -36,9 +36,18 @@ export function renderConsoleSummary(report: BatchAnalysisReport): string {
  * Renders the ANALISIS.md markdown report.
  * @param report - Aggregated analysis report.
  */
+function sortDuplicateGroups(
+  groups: BatchAnalysisReport["duplicateGroups"],
+): BatchAnalysisReport["duplicateGroups"] {
+  return [...groups].sort((left, right) => {
+    const leftFirst = left.gasto_ids[0] ?? "";
+    const rightFirst = right.gasto_ids[0] ?? "";
+    return leftFirst.localeCompare(rightFirst);
+  });
+}
+
 export function renderAnalysisMarkdown(report: BatchAnalysisReport): string {
-  const duplicateExamples = report.duplicateGroups
-    .slice(0, 5)
+  const duplicateExamples = sortDuplicateGroups(report.duplicateGroups)
     .map(
       (group) =>
         `- **${group.monto.toString()} ${group.moneda}** el ${group.fecha}: ${group.gasto_ids.join(", ")}`,

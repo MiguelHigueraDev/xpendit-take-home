@@ -25,6 +25,8 @@ Gastos con mismo monto, moneda y fecha:
 - **120 USD** el 2026-03-16: g_025, g_029
 - **70 USD** el 2026-06-04: g_036, g_041
 - **150 USD** el 2026-03-16: g_037, g_039, g_047
+- **130 EUR** el 2026-04-25: g_038, g_050
+- **90 USD** el 2026-06-09: g_042, g_043, g_044
 
 ### Montos negativos (0)
 
@@ -68,7 +70,7 @@ En lugar de hacer una llamada a la API por cada fila del CSV (problema N+1), el 
 | Fechas con fallback | 0 |
 | Ahorro vs N+1 | 25 llamadas evitadas |
 
-Cuando la API no está disponible o falla para una fecha, se usan tasas de respaldo desde `data/fallback-rates.json`.
+En modo `--mock`, se usan tasas locales desde `data/fallback-rates.json` en lugar de la API.
 
 ## Notas para el video (≤ 1 min)
 
