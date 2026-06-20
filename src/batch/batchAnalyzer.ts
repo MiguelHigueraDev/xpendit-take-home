@@ -1,4 +1,5 @@
 import type { Politica } from "../domain/types.js";
+import { parsePolitica } from "../domain/schemas.js";
 import type { Clock } from "../services/clock.js";
 import { FixedClock } from "../services/clock.js";
 import { ExpenseValidator } from "../services/expenseValidator.js";
@@ -29,7 +30,9 @@ export class BatchAnalyzer {
   private readonly rateResolver: RateResolver;
 
   constructor(options: BatchAnalyzerOptions) {
-    this.politica = options.politica ?? defaultPolitica;
+    this.politica = options.politica
+      ? parsePolitica(options.politica)
+      : defaultPolitica;
     this.clock = options.clock ?? new FixedClock(defaultReferenceDate);
     this.rateResolver = options.rateResolver;
   }

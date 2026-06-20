@@ -1,4 +1,9 @@
 import { z } from "zod";
+import {
+  deepClone,
+  deepFreeze,
+  type ImmutablePolitica,
+} from "../validation/immutable.js";
 import { parseOrThrow } from "../validation/parse.js";
 import { currencyCodeSchema, isoDateStringSchema } from "../validation/primitives.js";
 
@@ -81,7 +86,7 @@ export type Empleado = z.infer<typeof empleadoSchema>;
 export type LimiteAntiguedad = z.infer<typeof limiteAntiguedadSchema>;
 export type LimiteCategoria = z.infer<typeof limiteCategoriaSchema>;
 export type ReglaCentroCosto = z.infer<typeof reglaCentroCostoSchema>;
-export type Politica = z.infer<typeof politicaSchema>;
+export type Politica = ImmutablePolitica;
 export type Alerta = z.infer<typeof alertaSchema>;
 export type ValidationResult = z.infer<typeof validationResultSchema>;
 export type RuleVerdict = z.infer<typeof ruleVerdictSchema>;
@@ -96,9 +101,10 @@ export function parseEmpleado(input: unknown): Empleado {
   return parseOrThrow(empleadoSchema, input);
 }
 
-/** Validates and parses an expense policy. */
+/** Validates, deep-clones, and freezes an expense policy. */
 export function parsePolitica(input: unknown): Politica {
-  return parseOrThrow(politicaSchema, input);
+  const parsed = parseOrThrow(politicaSchema, input);
+  return deepFreeze(deepClone(parsed));
 }
 
 /** Validates and parses a validation result. */

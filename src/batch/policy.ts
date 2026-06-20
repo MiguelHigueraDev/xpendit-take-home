@@ -1,7 +1,7 @@
+import { parsePolitica } from "../domain/schemas.js";
 import type { Politica } from "../domain/types.js";
 
-/** Default expense policy from the Xpendit challenge specification. */
-export const defaultPolitica: Politica = {
+const defaultPoliticaDefinition = {
   moneda_base: "USD",
   limite_antiguedad: {
     pendiente_dias: 30,
@@ -23,7 +23,10 @@ export const defaultPolitica: Politica = {
       categoria_prohibida: "food",
     },
   ],
-};
+} as const;
+
+/** Default expense policy from the Xpendit challenge specification (deep-frozen). */
+export const defaultPolitica: Politica = parsePolitica(defaultPoliticaDefinition);
 
 /** Reference date used for age calculations in batch analysis (reproducible). */
 export const defaultReferenceDate = new Date("2026-06-19T00:00:00.000Z");

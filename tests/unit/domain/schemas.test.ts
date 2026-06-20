@@ -40,4 +40,44 @@ describe("domain schemas", () => {
       }),
     ).toThrow(ValidationError);
   });
+
+  it("returns a deeply frozen policy that cannot be mutated", () => {
+    const politica = parsePolitica(defaultPolitica);
+
+    expect(Object.isFrozen(politica)).toBe(true);
+    expect(Object.isFrozen(politica.limite_antiguedad)).toBe(true);
+    expect(Object.isFrozen(politica.limites_por_categoria)).toBe(true);
+    expect(Object.isFrozen(politica.limites_por_categoria.food)).toBe(true);
+    expect(Object.isFrozen(politica.reglas_centro_costo)).toBe(true);
+    expect(Object.isFrozen(politica.reglas_centro_costo[0])).toBe(true);
+
+    expect(() => {
+      (politica as { moneda_base: string }).moneda_base = "EUR";
+    }).toThrow(TypeError);
+
+    expect(() => {
+      (politica.limites_por_categoria as Record<string, unknown>).food = {
+        aprobado_hasta: 999,
+        pendiente_hasta: 999,
+      };
+    }).toThrow(TypeError);
+  });
+
+  it("returns a clone independent from the input object", () => {
+    const input = {
+      moneda_base: "USD",
+      limite_antiguedad: { pendiente_dias: 30, rechazado_dias: 60 },
+      limites_por_categoria: {
+        food: { aprobado_hasta: 100, pendiente_hasta: 150 },
+      },
+      reglas_centro_costo: [
+        { cost_center: "core_engineering", categoria_prohibida: "food" },
+      ],
+    };
+
+    const politica = parsePolitica(input);
+    input.limites_por_categoria.food.aprobado_hasta = 999;
+
+    expect(politica.limites_por_categoria.food?.aprobado_hasta).toBe(100);
+  });
 });

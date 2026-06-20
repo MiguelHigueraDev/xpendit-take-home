@@ -1,29 +1,7 @@
-import type { Empleado, Gasto, Politica } from "../src/domain/types.js";
+import type { Empleado, Gasto } from "../src/domain/types.js";
+import { defaultPolitica } from "../src/batch/policy.js";
 
-/** Default expense policy matching the Xpendit challenge specification. */
-export const defaultPolitica: Politica = {
-  moneda_base: "USD",
-  limite_antiguedad: {
-    pendiente_dias: 30,
-    rechazado_dias: 60,
-  },
-  limites_por_categoria: {
-    food: {
-      aprobado_hasta: 100,
-      pendiente_hasta: 150,
-    },
-    transport: {
-      aprobado_hasta: 200,
-      pendiente_hasta: 200,
-    },
-  },
-  reglas_centro_costo: [
-    {
-      cost_center: "core_engineering",
-      categoria_prohibida: "food",
-    },
-  ],
-};
+export { defaultPolitica };
 
 /** Sample employee from the sales team (allowed to report food). */
 export const salesEmployee: Empleado = {
