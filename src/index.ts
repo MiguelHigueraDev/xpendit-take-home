@@ -5,7 +5,13 @@
  * exchange rate services, and environment configuration.
  */
 export * from "./domain/types.js";
+export * from "./domain/schemas.js";
 export * from "./domain/codes.js";
+export * from "./validation/errors.js";
+export * from "./validation/parse.js";
+export * from "./validation/primitives.js";
+export * from "./api/schemas.js";
+export * from "./config/schemas.js";
 export * from "./config/env.js";
 export * from "./services/clock.js";
 export * from "./services/rateProvider.js";

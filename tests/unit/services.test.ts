@@ -17,9 +17,13 @@ describe("Clock utilities", () => {
   });
 
   it("throws on invalid ISO date", () => {
-    expect(() => parseIsoDate("invalid-date")).toThrow(
-      "Invalid ISO date: invalid-date",
+    expect(() => parseIsoDate("2026-02-30")).toThrow(
+      "Invalid ISO date: 2026-02-30",
     );
+  });
+
+  it("throws on malformed date format", () => {
+    expect(() => parseIsoDate("invalid-date")).toThrow(/Invalid date format/);
   });
 
   it("calculates whole-day differences", () => {

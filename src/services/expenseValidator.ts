@@ -1,3 +1,9 @@
+import {
+  parseEmpleado,
+  parseGasto,
+  parsePolitica,
+  parseValidationResult,
+} from "../domain/schemas.js";
 import type {
   Empleado,
   Gasto,
@@ -54,20 +60,25 @@ export class ExpenseValidator {
    * @param empleado - Employee who reported the expense.
    * @param politica - Company expense policy.
    * @returns Structured validation result with status and alerts.
+   * @throws {ValidationError} When inputs fail schema validation.
    */
   validate(
     gasto: Gasto,
     empleado: Empleado,
     politica: Politica,
   ): ValidationResult {
+    const validatedGasto = parseGasto(gasto);
+    const validatedEmpleado = parseEmpleado(empleado);
+    const validatedPolitica = parsePolitica(politica);
+
     const referenceDate = this.clock.now();
     const convertToBaseCurrency = (amount: number, fromCurrency: string) =>
-      this.rateProvider.convert(amount, fromCurrency, politica.moneda_base);
+      this.rateProvider.convert(amount, fromCurrency, validatedPolitica.moneda_base);
 
     const context = {
-      gasto,
-      empleado,
-      politica,
+      gasto: validatedGasto,
+      empleado: validatedEmpleado,
+      politica: validatedPolitica,
       referenceDate,
       convertToBaseCurrency,
     };
@@ -78,10 +89,10 @@ export class ExpenseValidator {
 
     const { status, alertas } = resolveVerdicts(verdicts);
 
-    return {
-      gasto_id: gasto.id,
+    return parseValidationResult({
+      gasto_id: validatedGasto.id,
       status,
       alertas,
-    };
+    });
   }
 }

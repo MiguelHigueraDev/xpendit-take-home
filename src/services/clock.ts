@@ -1,3 +1,5 @@
+import { parseIsoDateString } from "../domain/schemas.js";
+
 /** Abstraction for obtaining the current date/time (enables deterministic tests). */
 export interface Clock {
   /** Returns the current date and time. */
@@ -29,14 +31,11 @@ export class FixedClock implements Clock {
  * Parses an ISO date string (`YYYY-MM-DD`) into a UTC midnight Date.
  * @param dateString - Date in ISO format.
  * @returns Parsed date at UTC midnight.
- * @throws {Error} When the string is not a valid date.
+ * @throws {ValidationError} When the string is not a valid ISO date.
  */
 export function parseIsoDate(dateString: string): Date {
-  const date = new Date(`${dateString}T00:00:00.000Z`);
-  if (Number.isNaN(date.getTime())) {
-    throw new Error(`Invalid ISO date: ${dateString}`);
-  }
-  return date;
+  const validated = parseIsoDateString(dateString);
+  return new Date(`${validated}T00:00:00.000Z`);
 }
 
 /**

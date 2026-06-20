@@ -1,26 +1,12 @@
-/** Exchange rate snapshot returned by the Open Exchange Rates API. */
-export interface RateSet {
-  /** Base currency of the rate table (typically `"USD"`). */
-  base: string;
-  /** Map of currency codes to rates relative to the base. */
-  rates: Record<string, number>;
-  /** Date the rates apply to (`YYYY-MM-DD`), set for historical fetches. */
-  date?: string;
-}
-
-/** Shape of an error response from the Open Exchange Rates API. */
-interface ApiErrorBody {
-  error: true;
-  status?: number;
-  message?: string;
-  description?: string;
-}
-
-/** Shape of a successful rate response from the Open Exchange Rates API. */
-interface RateSetBody {
-  base: string;
-  rates: Record<string, number>;
-}
+import { z } from "zod";
+import {
+  isOpenExchangeRatesErrorBody,
+  parseOpenExchangeRatesRateSetBody,
+  type RateSet,
+} from "../api/schemas.js";
+import { parseIsoDateString } from "../domain/schemas.js";
+import { parseOrThrow } from "../validation/parse.js";
+import { ValidationError } from "../validation/errors.js";
 
 /** Thrown when an Open Exchange Rates API request fails. */
 export class ExchangeRateApiError extends Error {
@@ -42,8 +28,6 @@ export class ExchangeRateApiError extends Error {
   }
 }
 
-const ISO_DATE_REGEX = /^\d{4}-\d{2}-\d{2}$/;
-
 /** Injectable fetch implementation (defaults to global `fetch`). */
 export type FetchFn = typeof fetch;
 
@@ -57,6 +41,12 @@ export interface OpenExchangeRatesClientOptions {
   fetchFn?: FetchFn;
 }
 
+const clientOptionsSchema = z.object({
+  appId: z.string().trim().min(1, "Open Exchange Rates app ID is required"),
+  baseUrl: z.string().url().optional(),
+  fetchFn: z.custom<FetchFn>().optional(),
+});
+
 /** HTTP client for the Open Exchange Rates API. */
 export class OpenExchangeRatesClient {
   private readonly appId: string;
@@ -65,11 +55,13 @@ export class OpenExchangeRatesClient {
 
   /**
    * @param options - Client configuration.
+   * @throws {ValidationError} When options are invalid.
    */
   constructor(options: OpenExchangeRatesClientOptions) {
-    this.appId = options.appId;
-    this.baseUrl = options.baseUrl ?? "https://openexchangerates.org/api";
-    this.fetchFn = options.fetchFn ?? fetch;
+    const validated = parseOrThrow(clientOptionsSchema, options);
+    this.appId = validated.appId;
+    this.baseUrl = validated.baseUrl ?? "https://openexchangerates.org/api";
+    this.fetchFn = validated.fetchFn ?? fetch;
   }
 
   /**
@@ -86,16 +78,15 @@ export class OpenExchangeRatesClient {
    * Fetches historical exchange rates for a specific date.
    * @param date - Date in `YYYY-MM-DD` format.
    * @returns Rate snapshot including the requested date.
-   * @throws {Error} When the date format is invalid.
+   * @throws {ValidationError} When the date format is invalid.
    * @throws {ExchangeRateApiError} On HTTP or API-level failures.
    */
   async fetchHistorical(date: string): Promise<RateSet> {
-    if (!ISO_DATE_REGEX.test(date)) {
-      throw new Error(`Invalid date format: ${date}. Expected YYYY-MM-DD.`);
-    }
-
-    const rateSet = await this.fetchRateSet(this.buildUrl(`historical/${date}.json`));
-    return { ...rateSet, date };
+    const validatedDate = parseIsoDateString(date);
+    const rateSet = await this.fetchRateSet(
+      this.buildUrl(`historical/${validatedDate}.json`),
+    );
+    return { ...rateSet, date: validatedDate };
   }
 
   /**
@@ -117,8 +108,8 @@ export class OpenExchangeRatesClient {
       const response = await this.fetchFn(url);
       const body: unknown = await response.json();
 
-      if (!response.ok || isApiErrorBody(body)) {
-        const apiError = isApiErrorBody(body) ? body : undefined;
+      if (!response.ok || isOpenExchangeRatesErrorBody(body)) {
+        const apiError = isOpenExchangeRatesErrorBody(body) ? body : undefined;
         throw new ExchangeRateApiError(
           apiError?.description ??
             `Exchange rate API request failed with status ${response.status}`,
@@ -127,19 +118,18 @@ export class OpenExchangeRatesClient {
         );
       }
 
-      if (!isRateSetBody(body)) {
-        throw new ExchangeRateApiError(
-          "Invalid exchange rate API response format",
-        );
-      }
-
+      const parsed = parseOpenExchangeRatesRateSetBody(body);
       return {
-        base: body.base,
-        rates: body.rates,
+        base: parsed.base,
+        rates: parsed.rates,
       };
     } catch (error) {
       if (error instanceof ExchangeRateApiError) {
         throw error;
+      }
+
+      if (error instanceof ValidationError) {
+        throw new ExchangeRateApiError(error.message);
       }
 
       throw new ExchangeRateApiError(
@@ -151,25 +141,4 @@ export class OpenExchangeRatesClient {
   }
 }
 
-/** Type guard for Open Exchange Rates API error responses. */
-function isApiErrorBody(body: unknown): body is ApiErrorBody {
-  return (
-    typeof body === "object" &&
-    body !== null &&
-    "error" in body &&
-    (body as ApiErrorBody).error === true
-  );
-}
-
-/** Type guard for Open Exchange Rates API success responses. */
-function isRateSetBody(body: unknown): body is RateSetBody {
-  return (
-    typeof body === "object" &&
-    body !== null &&
-    "base" in body &&
-    "rates" in body &&
-    typeof (body as RateSetBody).base === "string" &&
-    typeof (body as RateSetBody).rates === "object" &&
-    (body as RateSetBody).rates !== null
-  );
-}
+export type { RateSet };

@@ -1,3 +1,4 @@
+import { parseIsoDateString } from "../domain/schemas.js";
 import type { RateProvider } from "./rateProvider.js";
 import { InMemoryRateProvider } from "./rateProvider.js";
 import { OpenExchangeRatesClient } from "./openExchangeRatesClient.js";
@@ -25,16 +26,18 @@ export class ExchangeRateService {
    *
    * @param fecha - Expense date in `YYYY-MM-DD` format.
    * @returns Synchronous rate provider backed by that date's rates.
+   * @throws {ValidationError} When the date format is invalid.
    */
   async getProviderForDate(fecha: string): Promise<RateProvider> {
-    const cached = this.cache.get(fecha);
+    const validatedDate = parseIsoDateString(fecha);
+    const cached = this.cache.get(validatedDate);
     if (cached) {
       return cached;
     }
 
-    const rateSet = await this.client.fetchHistorical(fecha);
+    const rateSet = await this.client.fetchHistorical(validatedDate);
     const provider = new InMemoryRateProvider(rateSet.rates, rateSet.base);
-    this.cache.set(fecha, provider);
+    this.cache.set(validatedDate, provider);
     return provider;
   }
 
@@ -59,9 +62,10 @@ export class ExchangeRateService {
    * Duplicate dates are deduplicated before fetching.
    *
    * @param fechas - Array of dates in `YYYY-MM-DD` format.
+   * @throws {ValidationError} When any date format is invalid.
    */
   async prewarm(fechas: string[]): Promise<void> {
-    const uniqueDates = [...new Set(fechas)];
+    const uniqueDates = [...new Set(fechas.map((fecha) => parseIsoDateString(fecha)))];
     await Promise.all(uniqueDates.map((fecha) => this.getProviderForDate(fecha)));
   }
 }

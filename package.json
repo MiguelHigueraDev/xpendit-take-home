@@ -14,7 +14,8 @@
     "demo:rates": "tsx examples/validateWithLiveRates.ts"
   },
   "dependencies": {
-    "dotenv": "^16.5.0"
+    "dotenv": "^16.5.0",
+    "zod": "^3.25.67"
   },
   "keywords": ["xpendit", "expense", "rules-engine"],
   "license": "MIT",

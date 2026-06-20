@@ -1,3 +1,7 @@
+import { z } from "zod";
+import { currencyCodeSchema } from "../validation/primitives.js";
+import { parseOrThrow } from "../validation/parse.js";
+
 /** Thrown when a currency conversion rate is not available. */
 export class RateNotFoundError extends Error {
   /**
@@ -25,31 +29,48 @@ export interface RateProvider {
   convert(amount: number, fromCurrency: string, toCurrency: string): number;
 }
 
+const convertArgsSchema = z.tuple([
+  z.number().finite(),
+  currencyCodeSchema,
+  currencyCodeSchema,
+]);
+
+const inMemoryRatesSchema = z.record(z.string(), z.number().positive().finite());
+
 /**
  * Synchronous rate provider backed by a pre-loaded rate table.
  * Rates are expressed as units of each currency per 1 unit of the base currency
  * (Open Exchange Rates convention).
  */
 export class InMemoryRateProvider implements RateProvider {
+  private readonly rates: Record<string, number>;
+  private readonly baseCurrency: string;
+
   /**
    * @param rates - Map of currency codes to their rate relative to the base.
    * @param baseCurrency - Base currency code (defaults to `"USD"`).
+   * @throws {ValidationError} When rates or base currency are invalid.
    */
-  constructor(
-    private readonly rates: Record<string, number>,
-    private readonly baseCurrency = "USD",
-  ) {}
+  constructor(rates: Record<string, number>, baseCurrency = "USD") {
+    this.rates = parseOrThrow(inMemoryRatesSchema, rates);
+    this.baseCurrency = parseOrThrow(currencyCodeSchema, baseCurrency);
+  }
 
   /** @inheritdoc */
   convert(amount: number, fromCurrency: string, toCurrency: string): number {
-    if (fromCurrency === toCurrency) {
-      return amount;
+    const [validatedAmount, validatedFrom, validatedTo] = parseOrThrow(
+      convertArgsSchema,
+      [amount, fromCurrency, toCurrency],
+    );
+
+    if (validatedFrom === validatedTo) {
+      return validatedAmount;
     }
 
-    const fromRate = this.getRate(fromCurrency);
-    const toRate = this.getRate(toCurrency);
+    const fromRate = this.getRate(validatedFrom);
+    const toRate = this.getRate(validatedTo);
 
-    const amountInBase = amount / fromRate;
+    const amountInBase = validatedAmount / fromRate;
     return amountInBase * toRate;
   }
 
