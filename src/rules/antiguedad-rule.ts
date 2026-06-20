@@ -1,5 +1,6 @@
 import {
   ALERT_CODES,
+  buildLimiteAntiguedadFuturoMessage,
   buildLimiteAntiguedadMessage,
   buildLimiteAntiguedadRechazadoMessage,
 } from "../domain/codes.js";
@@ -9,6 +10,7 @@ import { daysBetween, parseIsoDate } from "../services/clock.js";
 /**
  * Age rule: validates how old an expense is relative to the reference date.
  *
+ * - expense date is in the future → PENDIENTE
  * - 0 to `pendiente_dias` → APROBADO
  * - `pendiente_dias + 1` to `rechazado_dias` → PENDIENTE
  * - beyond `rechazado_dias` → RECHAZADO
@@ -18,6 +20,16 @@ export const evaluateAntiguedadRule: Rule = (context: RuleContext) => {
   const expenseDate = parseIsoDate(gasto.fecha);
   const days = daysBetween(expenseDate, referenceDate);
   const { pendiente_dias, rechazado_dias } = politica.limite_antiguedad;
+
+  if (days < 0) {
+    return {
+      status: "PENDIENTE",
+      alerta: {
+        codigo: ALERT_CODES.LIMITE_ANTIGUEDAD,
+        mensaje: buildLimiteAntiguedadFuturoMessage(Math.abs(days)),
+      },
+    };
+  }
 
   if (days <= pendiente_dias) {
     return { status: "APROBADO" };

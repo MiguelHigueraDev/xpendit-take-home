@@ -33,6 +33,14 @@ export function buildLimiteAntiguedadRechazadoMessage(
 }
 
 /**
+ * Builds the PENDIENTE alert message for a future-dated expense.
+ * @param daysAhead - Number of days the expense date is after the reference date.
+ */
+export function buildLimiteAntiguedadFuturoMessage(daysAhead: number): string {
+  return `La fecha del gasto está en el futuro (${daysAhead} días adelante). Requiere revisión.`;
+}
+
+/**
  * Builds the PENDIENTE alert message for the category limit rule.
  * @param categoria - Expense category.
  * @param aprobadoHasta - Auto-approval limit in base currency.

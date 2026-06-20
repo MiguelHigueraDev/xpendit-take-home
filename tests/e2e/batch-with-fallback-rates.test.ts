@@ -34,8 +34,8 @@ describe("E2E: batch analyzer with fallback rates (offline CLI path)", () => {
     const report = await analyzer.analyze(csvContent);
 
     expect(report.statusBreakdown).toEqual({
-      APROBADO: 9,
-      PENDIENTE: 17,
+      APROBADO: 13,
+      PENDIENTE: 13,
       RECHAZADO: 24,
     });
     expect(report.rateResolution.apiCallCount).toBe(0);
@@ -44,7 +44,7 @@ describe("E2E: batch analyzer with fallback rates (offline CLI path)", () => {
 
     const markdown = renderAnalysisMarkdown(report);
     expect(markdown).toContain("# Análisis de Gastos Históricos");
-    expect(markdown).toContain("| APROBADO | 9 |");
+    expect(markdown).toContain("| APROBADO | 13 |");
     expect(markdown).toContain("Duplicados exactos (7 grupos)");
     expect(markdown).toContain("Filas malformadas");
   });

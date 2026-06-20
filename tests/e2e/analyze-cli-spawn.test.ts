@@ -77,7 +77,7 @@ describe("E2E: analyze.ts CLI process", () => {
 
     const markdown = readFileSync(outputPath, "utf-8");
     expect(markdown).toContain("# Análisis de Gastos Históricos");
-    expect(markdown).toContain("| APROBADO | 9 |");
+    expect(markdown).toContain("| APROBADO | 13 |");
     expect(markdown).toContain("Duplicados exactos (7 grupos)");
   });
 
@@ -110,8 +110,8 @@ describe("E2E: analyze.ts CLI process", () => {
     expect(report.validRows).toBe(50);
     expect(report.referenceDate).toBe("2026-06-19");
     expect(report.statusBreakdown).toEqual({
-      APROBADO: 9,
-      PENDIENTE: 17,
+      APROBADO: 13,
+      PENDIENTE: 13,
       RECHAZADO: 24,
     });
   });

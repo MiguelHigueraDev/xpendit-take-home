@@ -265,7 +265,7 @@ Duplicados exactos y montos negativos se detectan en `anomaly-detector.ts`, **fu
 El test e2e principal (`gastos-historicos.test.ts`) es un **golden file**:
 
 - Los 50 gastos se validan con tasas mock y fecha fija `2026-06-19`
-- Se verifica el desglose exacto: 9 APROBADO / 17 PENDIENTE / 24 RECHAZADO
+- Se verifica el desglose exacto: 13 APROBADO / 13 PENDIENTE / 24 RECHAZADO
 - Cada `gasto_id` tiene su status y alertas esperados
 - Los 7 grupos de duplicados se verifican uno a uno
 

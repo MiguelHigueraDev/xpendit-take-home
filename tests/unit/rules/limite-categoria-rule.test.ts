@@ -20,7 +20,7 @@ describe("evaluateLimiteCategoriaRule", () => {
   it("returns PENDIENTE with NO_POLICY when category has no configured limit", () => {
     const verdict = evaluateLimiteCategoriaRule({
       ...baseContext,
-      gasto: createGasto({ categoria: "software" }),
+      gasto: createGasto({ categoria: "miscellaneous" }),
     });
 
     expect(verdict).toEqual({
@@ -28,7 +28,7 @@ describe("evaluateLimiteCategoriaRule", () => {
       alerta: {
         codigo: ALERT_CODES.NO_POLICY,
         mensaje:
-          "La categoría 'software' no tiene política definida. Requiere revisión manual.",
+          "La categoría 'miscellaneous' no tiene política definida. Requiere revisión manual.",
       },
     });
   });

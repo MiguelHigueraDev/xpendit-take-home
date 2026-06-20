@@ -12,6 +12,18 @@
     "transport": {
       "aprobado_hasta": 200,
       "pendiente_hasta": 200
+    },
+    "software": {
+      "aprobado_hasta": 300,
+      "pendiente_hasta": 500
+    },
+    "lodging": {
+      "aprobado_hasta": 200,
+      "pendiente_hasta": 400
+    },
+    "other": {
+      "aprobado_hasta": 100,
+      "pendiente_hasta": 200
     }
   },
   "reglas_centro_costo": [

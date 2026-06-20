@@ -110,9 +110,9 @@ describe("ExpenseValidator", () => {
   it("returns PENDIENTE with NO_POLICY for unconfigured categories", () => {
     const result = validator.validate(
       createGasto({
-        id: "g_software",
+        id: "g_misc",
         monto: 50,
-        categoria: "software",
+        categoria: "miscellaneous",
         fecha: "2026-06-04",
       }),
       salesEmployee,
@@ -120,13 +120,13 @@ describe("ExpenseValidator", () => {
     );
 
     expect(result).toEqual({
-      gasto_id: "g_software",
+      gasto_id: "g_misc",
       status: "PENDIENTE",
       alertas: [
         {
           codigo: ALERT_CODES.NO_POLICY,
           mensaje:
-            "La categoría 'software' no tiene política definida. Requiere revisión manual.",
+            "La categoría 'miscellaneous' no tiene política definida. Requiere revisión manual.",
         },
       ],
     });

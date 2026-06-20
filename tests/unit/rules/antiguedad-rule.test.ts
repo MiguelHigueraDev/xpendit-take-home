@@ -68,6 +68,18 @@ describe("evaluateAntiguedadRule", () => {
     expect(verdict?.alerta?.mensaje).toContain("60 días");
   });
 
+  it("returns PENDIENTE when expense date is in the future", () => {
+    const verdict = evaluateAntiguedadRule({
+      ...baseContext,
+      gasto: createGasto({ fecha: "2026-06-25" }),
+    });
+
+    expect(verdict?.status).toBe("PENDIENTE");
+    expect(verdict?.alerta?.codigo).toBe(ALERT_CODES.LIMITE_ANTIGUEDAD);
+    expect(verdict?.alerta?.mensaje).toContain("futuro");
+    expect(verdict?.alerta?.mensaje).toContain("6 días adelante");
+  });
+
   it("does not depend on employee or category", () => {
     const verdict = evaluateAntiguedadRule({
       ...baseContext,

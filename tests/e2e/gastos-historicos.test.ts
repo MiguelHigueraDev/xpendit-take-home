@@ -17,14 +17,17 @@ const historicalCsv = readFileSync(
 
 /** Expected status counts for gastos-historicos.csv (ref 2026-06-19, mock FX rates). */
 const GOLDEN_STATUS_BREAKDOWN: Record<Estado, number> = {
-  APROBADO: 9,
-  PENDIENTE: 17,
+  APROBADO: 13,
+  PENDIENTE: 13,
   RECHAZADO: 24,
 };
 
 const GOLDEN_APPROVED_IDS = [
   "g_001",
   "g_004",
+  "g_014",
+  "g_024",
+  "g_031",
   "g_032",
   "g_036",
   "g_041",
@@ -32,6 +35,7 @@ const GOLDEN_APPROVED_IDS = [
   "g_043",
   "g_044",
   "g_045",
+  "g_049",
 ];
 
 const GOLDEN_PENDING_IDS = [
@@ -40,17 +44,13 @@ const GOLDEN_PENDING_IDS = [
   "g_007",
   "g_008",
   "g_010",
-  "g_014",
   "g_015",
-  "g_024",
   "g_030",
-  "g_031",
   "g_034",
   "g_035",
   "g_038",
   "g_040",
   "g_046",
-  "g_049",
   "g_050",
 ];
 
@@ -250,12 +250,15 @@ describe("E2E: gastos-historicos.csv batch analysis", () => {
       expect(alertCodesFor(report, "g_004")).toEqual([]);
     });
 
-    it("marks unconfigured categories as pending with NO_POLICY", () => {
-      expect(alertCodesFor(report, "g_014")).toEqual([ALERT_CODES.NO_POLICY]);
-      expect(alertCodesFor(report, "g_024")).toEqual([ALERT_CODES.NO_POLICY]);
+    it("approves compliant software and lodging expenses", () => {
+      expect(alertCodesFor(report, "g_014")).toEqual([]);
+      expect(alertCodesFor(report, "g_024")).toEqual([]);
+      expect(alertCodesFor(report, "g_049")).toEqual([]);
+    });
+
+    it("rejects antiquity violations for software expenses", () => {
       expect(alertCodesFor(report, "g_033")).toEqual([
         ALERT_CODES.LIMITE_ANTIGUEDAD,
-        ALERT_CODES.NO_POLICY,
       ]);
     });
   });
