@@ -3,6 +3,8 @@ export const ALERT_CODES = {
   LIMITE_ANTIGUEDAD: "LIMITE_ANTIGUEDAD",
   LIMITE_CATEGORIA: "LIMITE_CATEGORIA",
   POLITICA_CENTRO_COSTO: "POLITICA_CENTRO_COSTO",
+  ANOMALIA_DUPLICADO: "ANOMALIA_DUPLICADO",
+  ANOMALIA_MONTO_NEGATIVO: "ANOMALIA_MONTO_NEGATIVO",
 } as const;
 
 /** Union of all known alert code values. */
@@ -64,4 +66,20 @@ export function buildPoliticaCentroCostoMessage(
   categoria: string,
 ): string {
   return `El C.C. '${costCenter}' no puede reportar '${categoria}'.`;
+}
+
+/**
+ * Builds an alert message for an exact duplicate expense.
+ * @param gastoIds - IDs of all expenses in the duplicate group.
+ */
+export function buildAnomaliaDuplicadoMessage(gastoIds: string[]): string {
+  return `Gasto duplicado exacto detectado. IDs relacionados: ${gastoIds.join(", ")}.`;
+}
+
+/**
+ * Builds an alert message for a negative expense amount.
+ * @param monto - The invalid negative amount.
+ */
+export function buildAnomaliaMontoNegativoMessage(monto: number): string {
+  return `Monto negativo detectado: ${monto}.`;
 }

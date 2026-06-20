@@ -1,0 +1,6 @@
+gasto_id,empleado_id,empleado_nombre,empleado_apellido,empleado_cost_center,categoria,monto,moneda,fecha
+g_001,e_002,Bruno,Soto,sales_team,food,55,USD,2026-06-04
+g_002,e_002,Bruno,Soto,sales_team,food,90,USD,2026-06-09
+g_003,e_002,Bruno,Soto,sales_team,food,90,USD,2026-06-09
+g_004,e_001,Ana,Reyes,core_engineering,food,50,USD,2026-06-04
+g_005,e_002,Bruno,Soto,sales_team,food,-25,USD,2026-06-04

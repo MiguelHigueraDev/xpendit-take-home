@@ -134,6 +134,25 @@ npm run demo:rates
 
 Esto valida un gasto en CLP usando tasas históricas del `2026-05-20`.
 
+## Parte 3 — Analizador de lotes
+
+Procesa `gastos_historicos.csv`, aplica las reglas de política con tasas históricas reales (con fallback offline), detecta anomalías (duplicados exactos y montos negativos), y genera `ANALISIS.md`.
+
+```bash
+# Analizar el CSV por defecto (gastos_historicos.csv → ANALISIS.md)
+npm run analyze
+
+# Rutas personalizadas: npm run analyze -- <csv> <salida.md>
+npm run analyze -- gastos_historicos.csv ANALISIS.md
+```
+
+El analizador:
+- Valida cada fila del CSV con Zod (`csv-parse` + schemas de dominio).
+- Obtiene tasas históricas **una vez por fecha única** (optimización N+1).
+- Usa tasas live de Open Exchange Rates cuando hay API key; si falla, usa `data/fallback-rates.json`.
+- Detecta duplicados exactos (mismo monto, moneda, fecha) y montos negativos como alertas de anomalía.
+- Escribe el reporte en `ANALISIS.md` con desglose por estado, ejemplos y explicación de la optimización.
+
 ## Reglas implementadas
 
 | Regla | Condición | Resultado |
@@ -152,18 +171,16 @@ Esto valida un gasto en CLP usando tasas históricas del `2026-05-20`.
 
 ```
 src/
+  batch/           # CSV loader, anomalías, analizador, reporting, CLI
   config/          # Carga de .env (dotenv) y API key
-  domain/          # Tipos y códigos de alerta
+  domain/          # Tipos, schemas Zod y códigos de alerta
   rules/           # Reglas puras (antigüedad, categoría, centro de costo)
   services/        # Validador, cliente API, cache de tasas, reloj
+data/
+  fallback-rates.json   # Tasas offline para fallback
 examples/
   validateWithLiveRates.ts   # Demo Parte 2
 tests/
   unit/            # Pruebas exhaustivas (sin red)
+ANALISIS.md        # Reporte generado por Parte 3
 ```
-
-## Próximos pasos (Parte 3)
-
-- Script de análisis por lotes sobre `gastos_historicos.csv`.
-- Detección de anomalías (duplicados, montos negativos).
-- Optimización: agrupar gastos por fecha y usar `ExchangeRateService.prewarm()`.
