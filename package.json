@@ -1,0 +1,23 @@
+{
+  "name": "xpendit-rules-engine",
+  "version": "1.0.0",
+  "description": "Xpendit expense rules engine - Part 1 (pure logic validator)",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage"
+  },
+  "keywords": ["xpendit", "expense", "rules-engine"],
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^22.15.21",
+    "@vitest/coverage-v8": "^3.1.4",
+    "typescript": "^5.8.3",
+    "vitest": "^3.1.4"
+  }
+}
