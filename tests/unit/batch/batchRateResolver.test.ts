@@ -1,10 +1,12 @@
 import { describe, expect, it, vi } from "vitest";
+import { toMoney } from "../../../src/domain/money.js";
 import { BatchRateResolver } from "../../../src/batch/batchRateResolver.js";
 import { InMemoryRateProvider } from "../../../src/services/rateProvider.js";
 import type { ExchangeRateService } from "../../../src/services/exchangeRateService.js";
+import { mockExchangeRates } from "../../fixtures.js";
 
 describe("BatchRateResolver", () => {
-  const fallbackRates = { CLP: 900, MXN: 20, EUR: 0.92 };
+  const fallbackRates = mockExchangeRates;
 
   it("fetches one provider per unique date via live service", async () => {
     const getProviderForDate = vi.fn().mockResolvedValue(
@@ -44,7 +46,12 @@ describe("BatchRateResolver", () => {
 
     expect(result.fallbackDates).toEqual(["2026-06-04"]);
     expect(result.apiCallCount).toBe(0);
-    expect(result.providersByDate.get("2026-06-04")?.convert(900, "CLP", "USD")).toBe(1);
+    expect(
+      result.providersByDate
+        .get("2026-06-04")
+        ?.convert(toMoney(900), "CLP", "USD")
+        .toString(),
+    ).toBe("1");
   });
 
   it("uses fallback for all dates when no rate service is configured", async () => {

@@ -1,3 +1,4 @@
+import { toMoney, moneyKey, type Money } from "../domain/money.js";
 import {
   ALERT_CODES,
   buildAnomaliaDuplicadoMessage,
@@ -12,8 +13,8 @@ export interface AnomalyDetectionResult {
   negativeAmountIds: string[];
 }
 
-function duplicateKey(monto: number, moneda: string, fecha: string): string {
-  return `${monto}|${moneda}|${fecha}`;
+function duplicateKey(monto: Money, moneda: string, fecha: string): string {
+  return `${moneyKey(monto)}|${moneda}|${fecha}`;
 }
 
 /**
@@ -65,7 +66,7 @@ export function detectAnomalies(rows: ParsedExpenseRow[]): AnomalyDetectionResul
   }
 
   for (const row of rows) {
-    if (row.gasto.monto < 0) {
+    if (row.gasto.monto.lt(0)) {
       negativeAmountIds.push(row.gasto.id);
       const anomaly: Anomaly = {
         gasto_id: row.gasto.id,

@@ -1,17 +1,18 @@
 import { z } from "zod";
+import { positiveRateSchema } from "../domain/money.js";
+import type { Money } from "../domain/money.js";
 import { parseIsoDateString } from "../domain/schemas.js";
 import type { ExchangeRateService } from "../services/exchangeRateService.js";
 import {
   InMemoryRateProvider,
   type RateProvider,
 } from "../services/rateProvider.js";
-import { exchangeRateSchema } from "../validation/primitives.js";
 import { parseOrThrow } from "../validation/parse.js";
 import type { BatchRateResolution } from "./types.js";
 
 const fallbackRatesFileSchema = z.object({
   base: z.string().trim().min(1),
-  rates: z.record(z.string(), exchangeRateSchema),
+  rates: z.record(z.string(), positiveRateSchema),
 });
 
 /** Resolves rate providers for a batch of dates with live API + fallback. */
@@ -22,7 +23,7 @@ export interface RateResolver {
 /** Options for {@link BatchRateResolver}. */
 export interface BatchRateResolverOptions {
   rateService?: ExchangeRateService | null;
-  fallbackRates: Record<string, number>;
+  fallbackRates: Record<string, Money>;
   baseCurrency?: string;
 }
 
@@ -32,7 +33,7 @@ export interface BatchRateResolverOptions {
  */
 export class BatchRateResolver implements RateResolver {
   private readonly rateService: ExchangeRateService | null;
-  private readonly fallbackRates: Record<string, number>;
+  private readonly fallbackRates: Record<string, Money>;
   private readonly baseCurrency: string;
 
   constructor(options: BatchRateResolverOptions) {
@@ -85,7 +86,7 @@ export class BatchRateResolver implements RateResolver {
  */
 export function parseFallbackRatesFile(jsonContent: string): {
   base: string;
-  rates: Record<string, number>;
+  rates: Record<string, Money>;
 } {
   const parsed = parseOrThrow(fallbackRatesFileSchema, JSON.parse(jsonContent));
   return parsed;

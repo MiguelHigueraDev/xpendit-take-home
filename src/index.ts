@@ -6,6 +6,7 @@
  */
 export * from "./domain/types.js";
 export * from "./domain/schemas.js";
+export * from "./domain/money.js";
 export * from "./domain/codes.js";
 export * from "./validation/immutable.js";
 export * from "./validation/errors.js";

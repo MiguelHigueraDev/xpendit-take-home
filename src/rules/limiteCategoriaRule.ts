@@ -26,11 +26,11 @@ export const evaluateLimiteCategoriaRule: Rule = (context: RuleContext) => {
   const montoBase = convertToBaseCurrency(gasto.monto, gasto.moneda);
   const { aprobado_hasta, pendiente_hasta } = limite;
 
-  if (montoBase <= aprobado_hasta) {
+  if (montoBase.lte(aprobado_hasta)) {
     return { status: "APROBADO" };
   }
 
-  if (montoBase <= pendiente_hasta) {
+  if (montoBase.lte(pendiente_hasta)) {
     return {
       status: "PENDIENTE",
       alerta: {

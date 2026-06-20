@@ -4,6 +4,7 @@ import type {
   Politica,
   RuleVerdict,
 } from "./schemas.js";
+import type { Money } from "./money.js";
 
 export type {
   Alerta,
@@ -33,7 +34,7 @@ export interface RuleContext {
    * @param amount - Amount in the source currency.
    * @param fromCurrency - ISO currency code of the source amount.
    */
-  convertToBaseCurrency: (amount: number, fromCurrency: string) => number;
+  convertToBaseCurrency: (amount: Money, fromCurrency: string) => Money;
 }
 
 /**

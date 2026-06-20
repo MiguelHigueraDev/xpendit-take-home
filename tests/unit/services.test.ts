@@ -5,10 +5,19 @@ import {
   parseIsoDate,
   SystemClock,
 } from "../../src/services/clock.js";
+import { toMoney } from "../../src/domain/money.js";
+import { toRateTable } from "../fixtures.js";
 import {
   InMemoryRateProvider,
   RateNotFoundError,
 } from "../../src/services/rateProvider.js";
+import { ExpenseValidator } from "../../src/services/expenseValidator.js";
+import {
+  createGasto,
+  defaultPolitica,
+  referenceDate,
+  salesEmployee,
+} from "../fixtures.js";
 
 describe("Clock utilities", () => {
   it("parses ISO date strings as UTC midnight", () => {
@@ -45,28 +54,49 @@ describe("Clock utilities", () => {
 });
 
 describe("InMemoryRateProvider", () => {
-  const provider = new InMemoryRateProvider({
-    CLP: 900,
-    EUR: 0.92,
-  });
+  const provider = new InMemoryRateProvider(
+    toRateTable({ CLP: 900, EUR: 0.92 }),
+  );
 
   it("returns same amount when currencies match", () => {
-    expect(provider.convert(100, "USD", "USD")).toBe(100);
+    expect(provider.convert(toMoney(100), "USD", "USD").toString()).toBe("100");
   });
 
   it("converts CLP to USD using injected rates", () => {
-    expect(provider.convert(900, "CLP", "USD")).toBe(1);
-    expect(provider.convert(81000, "CLP", "USD")).toBe(90);
+    expect(provider.convert(toMoney(900), "CLP", "USD").toString()).toBe("1");
+    expect(provider.convert(toMoney(81000), "CLP", "USD").toString()).toBe(
+      "90",
+    );
   });
 
   it("converts between non-base currencies via USD base", () => {
     // 0.92 EUR = 1 USD = 900 CLP
-    expect(provider.convert(0.92, "EUR", "CLP")).toBeCloseTo(900, 5);
+    expect(provider.convert(toMoney(0.92), "EUR", "CLP").toString()).toBe(
+      "900",
+    );
   });
 
   it("throws RateNotFoundError for unknown currency", () => {
-    expect(() => provider.convert(100, "JPY", "USD")).toThrow(
+    expect(() => provider.convert(toMoney(100), "JPY", "USD")).toThrow(
       RateNotFoundError,
     );
+  });
+
+  it("avoids float drift on FX conversion near limit boundary", () => {
+    const converted = provider.convert(toMoney(135000), "CLP", "USD");
+    expect(converted.toString()).toBe("150");
+
+    const validator = new ExpenseValidator({
+      clock: new FixedClock(referenceDate),
+      rateProvider: provider,
+    });
+
+    const result = validator.validate(
+      createGasto({ monto: 135000, moneda: "CLP", categoria: "food" }),
+      salesEmployee,
+      defaultPolitica,
+    );
+
+    expect(result.status).toBe("PENDIENTE");
   });
 });

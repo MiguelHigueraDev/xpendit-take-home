@@ -4,6 +4,7 @@ import { evaluateLimiteCategoriaRule } from "../../../src/rules/limiteCategoriaR
 import {
   createGasto,
   defaultPolitica,
+  mockConvertToBaseCurrency,
   referenceDate,
   salesEmployee,
 } from "../../fixtures.js";
@@ -13,15 +14,7 @@ describe("evaluateLimiteCategoriaRule", () => {
     empleado: salesEmployee,
     politica: defaultPolitica,
     referenceDate,
-    convertToBaseCurrency: (amount: number, fromCurrency: string) => {
-      if (fromCurrency === "USD") {
-        return amount;
-      }
-      if (fromCurrency === "CLP") {
-        return amount / 900;
-      }
-      return amount;
-    },
+    convertToBaseCurrency: mockConvertToBaseCurrency,
   };
 
   it("returns null when category has no configured limit", () => {

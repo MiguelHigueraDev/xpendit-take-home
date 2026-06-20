@@ -5,6 +5,7 @@ import {
   createGasto,
   defaultPolitica,
   engineeringEmployee,
+  noopConvertToBaseCurrency,
   referenceDate,
   salesEmployee,
 } from "../../fixtures.js";
@@ -13,7 +14,7 @@ describe("evaluateCentroCostoRule", () => {
   const baseContext = {
     politica: defaultPolitica,
     referenceDate,
-    convertToBaseCurrency: (amount: number) => amount,
+    convertToBaseCurrency: noopConvertToBaseCurrency,
   };
 
   it("returns RECHAZADO when cost center prohibits category", () => {

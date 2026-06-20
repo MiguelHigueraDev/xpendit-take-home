@@ -1,4 +1,7 @@
+import { Decimal } from "decimal.js";
 import { z } from "zod";
+import type { Money } from "../domain/money.js";
+import { positiveRateSchema, roundMoney, toMoney } from "../domain/money.js";
 import { currencyCodeSchema } from "../validation/primitives.js";
 import { parseOrThrow } from "../validation/parse.js";
 
@@ -24,18 +27,18 @@ export interface RateProvider {
    * @param amount - Amount in the source currency.
    * @param fromCurrency - ISO code of the source currency.
    * @param toCurrency - ISO code of the target currency.
-   * @returns Converted amount in the target currency.
+   * @returns Converted amount in the target currency, rounded to 4 decimal places.
    */
-  convert(amount: number, fromCurrency: string, toCurrency: string): number;
+  convert(amount: Money, fromCurrency: string, toCurrency: string): Money;
 }
 
 const convertArgsSchema = z.tuple([
-  z.number().finite(),
+  z.instanceof(Decimal),
   currencyCodeSchema,
   currencyCodeSchema,
 ]);
 
-const inMemoryRatesSchema = z.record(z.string(), z.number().positive().finite());
+const inMemoryRatesSchema = z.record(z.string(), positiveRateSchema);
 
 /**
  * Synchronous rate provider backed by a pre-loaded rate table.
@@ -43,7 +46,7 @@ const inMemoryRatesSchema = z.record(z.string(), z.number().positive().finite())
  * (Open Exchange Rates convention).
  */
 export class InMemoryRateProvider implements RateProvider {
-  private readonly rates: Record<string, number>;
+  private readonly rates: Record<string, Money>;
   private readonly baseCurrency: string;
 
   /**
@@ -51,13 +54,13 @@ export class InMemoryRateProvider implements RateProvider {
    * @param baseCurrency - Base currency code (defaults to `"USD"`).
    * @throws {ValidationError} When rates or base currency are invalid.
    */
-  constructor(rates: Record<string, number>, baseCurrency = "USD") {
+  constructor(rates: Record<string, Money>, baseCurrency = "USD") {
     this.rates = parseOrThrow(inMemoryRatesSchema, rates);
     this.baseCurrency = parseOrThrow(currencyCodeSchema, baseCurrency);
   }
 
   /** @inheritdoc */
-  convert(amount: number, fromCurrency: string, toCurrency: string): number {
+  convert(amount: Money, fromCurrency: string, toCurrency: string): Money {
     const [validatedAmount, validatedFrom, validatedTo] = parseOrThrow(
       convertArgsSchema,
       [amount, fromCurrency, toCurrency],
@@ -70,8 +73,7 @@ export class InMemoryRateProvider implements RateProvider {
     const fromRate = this.getRate(validatedFrom);
     const toRate = this.getRate(validatedTo);
 
-    const amountInBase = validatedAmount / fromRate;
-    return amountInBase * toRate;
+    return roundMoney(validatedAmount.div(fromRate).mul(toRate));
   }
 
   /**
@@ -79,9 +81,9 @@ export class InMemoryRateProvider implements RateProvider {
    * @param currency - ISO currency code.
    * @throws {RateNotFoundError} When the currency is not in the rate table.
    */
-  private getRate(currency: string): number {
+  private getRate(currency: string): Money {
     if (currency === this.baseCurrency) {
-      return 1;
+      return toMoney(1);
     }
 
     const rate = this.rates[currency];

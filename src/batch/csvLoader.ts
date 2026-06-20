@@ -1,6 +1,7 @@
 import { parse } from "csv-parse/sync";
 import { z } from "zod";
 import { empleadoSchema, gastoSchema } from "../domain/schemas.js";
+import { moneySchema } from "../domain/money.js";
 import { isoDateStringSchema } from "../validation/primitives.js";
 import type { CsvRowError, ParsedExpenseRow } from "./types.js";
 
@@ -12,7 +13,7 @@ export const csvRowSchema = z.object({
   empleado_apellido: z.string().trim().min(1),
   empleado_cost_center: z.string().trim().min(1),
   categoria: z.string().trim().min(1),
-  monto: z.coerce.number().finite(),
+  monto: moneySchema,
   moneda: z.string().trim().min(1),
   fecha: isoDateStringSchema,
 });

@@ -1,3 +1,6 @@
+import type { Money } from "./money.js";
+import { formatMoney } from "./money.js";
+
 /** Standard alert codes emitted by validation rules. */
 export const ALERT_CODES = {
   LIMITE_ANTIGUEDAD: "LIMITE_ANTIGUEDAD",
@@ -36,10 +39,10 @@ export function buildLimiteAntiguedadRechazadoMessage(
  */
 export function buildLimiteCategoriaPendienteMessage(
   categoria: string,
-  aprobadoHasta: number,
+  aprobadoHasta: Money,
   monedaBase: string,
 ): string {
-  return `Gasto de '${categoria}' excede el límite aprobado de ${aprobadoHasta} ${monedaBase}. Requiere revisión.`;
+  return `Gasto de '${categoria}' excede el límite aprobado de ${formatMoney(aprobadoHasta)} ${monedaBase}. Requiere revisión.`;
 }
 
 /**
@@ -50,10 +53,10 @@ export function buildLimiteCategoriaPendienteMessage(
  */
 export function buildLimiteCategoriaRechazadoMessage(
   categoria: string,
-  pendienteHasta: number,
+  pendienteHasta: Money,
   monedaBase: string,
 ): string {
-  return `Gasto de '${categoria}' excede el límite de ${pendienteHasta} ${monedaBase}. Excede límite aprobado.`;
+  return `Gasto de '${categoria}' excede el límite de ${formatMoney(pendienteHasta)} ${monedaBase}. Excede límite aprobado.`;
 }
 
 /**
@@ -80,6 +83,6 @@ export function buildAnomaliaDuplicadoMessage(gastoIds: string[]): string {
  * Builds an alert message for a negative expense amount.
  * @param monto - The invalid negative amount.
  */
-export function buildAnomaliaMontoNegativoMessage(monto: number): string {
-  return `Monto negativo detectado: ${monto}.`;
+export function buildAnomaliaMontoNegativoMessage(monto: Money): string {
+  return `Monto negativo detectado: ${formatMoney(monto)}.`;
 }

@@ -5,6 +5,7 @@ import {
   createGasto,
   defaultPolitica,
   engineeringEmployee,
+  noopConvertToBaseCurrency,
   referenceDate,
   salesEmployee,
 } from "../../fixtures.js";
@@ -14,7 +15,7 @@ describe("evaluateAntiguedadRule", () => {
     empleado: salesEmployee,
     politica: defaultPolitica,
     referenceDate,
-    convertToBaseCurrency: (amount: number) => amount,
+    convertToBaseCurrency: noopConvertToBaseCurrency,
   };
 
   it("returns APROBADO when expense is 0 days old", () => {

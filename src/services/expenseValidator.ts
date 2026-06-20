@@ -1,3 +1,4 @@
+import type { Money } from "../domain/money.js";
 import {
   parseEmpleado,
   parseGasto,
@@ -72,8 +73,12 @@ export class ExpenseValidator {
     const validatedPolitica = parsePolitica(politica);
 
     const referenceDate = this.clock.now();
-    const convertToBaseCurrency = (amount: number, fromCurrency: string) =>
-      this.rateProvider.convert(amount, fromCurrency, validatedPolitica.moneda_base);
+    const convertToBaseCurrency = (amount: Money, fromCurrency: string) =>
+      this.rateProvider.convert(
+        amount,
+        fromCurrency,
+        validatedPolitica.moneda_base,
+      );
 
     const context = {
       gasto: validatedGasto,

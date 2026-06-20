@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { moneySchema } from "./money.js";
 import {
   deepClone,
   deepFreeze,
@@ -13,7 +14,7 @@ export const estadoSchema = z.enum(["APROBADO", "PENDIENTE", "RECHAZADO"]);
 /** Expense submitted for validation. */
 export const gastoSchema = z.object({
   id: z.string().trim().min(1, "Expense id is required"),
-  monto: z.number().finite("Expense amount must be a finite number"),
+  monto: moneySchema,
   moneda: currencyCodeSchema,
   fecha: isoDateStringSchema,
   categoria: z.string().trim().min(1, "Category is required"),
@@ -40,10 +41,10 @@ export const limiteAntiguedadSchema = z
 /** Category spending limits in base currency. */
 export const limiteCategoriaSchema = z
   .object({
-    aprobado_hasta: z.number().nonnegative(),
-    pendiente_hasta: z.number().nonnegative(),
+    aprobado_hasta: moneySchema,
+    pendiente_hasta: moneySchema,
   })
-  .refine((value) => value.aprobado_hasta <= value.pendiente_hasta, {
+  .refine((value) => value.aprobado_hasta.lte(value.pendiente_hasta), {
     message: "aprobado_hasta must be less than or equal to pendiente_hasta",
   });
 
@@ -80,16 +81,16 @@ export const ruleVerdictSchema = z.object({
   alerta: alertaSchema.optional(),
 });
 
-export type Estado = z.infer<typeof estadoSchema>;
-export type Gasto = z.infer<typeof gastoSchema>;
-export type Empleado = z.infer<typeof empleadoSchema>;
-export type LimiteAntiguedad = z.infer<typeof limiteAntiguedadSchema>;
-export type LimiteCategoria = z.infer<typeof limiteCategoriaSchema>;
-export type ReglaCentroCosto = z.infer<typeof reglaCentroCostoSchema>;
+export type Estado = z.output<typeof estadoSchema>;
+export type Gasto = z.output<typeof gastoSchema>;
+export type Empleado = z.output<typeof empleadoSchema>;
+export type LimiteAntiguedad = z.output<typeof limiteAntiguedadSchema>;
+export type LimiteCategoria = z.output<typeof limiteCategoriaSchema>;
+export type ReglaCentroCosto = z.output<typeof reglaCentroCostoSchema>;
 export type Politica = ImmutablePolitica;
-export type Alerta = z.infer<typeof alertaSchema>;
-export type ValidationResult = z.infer<typeof validationResultSchema>;
-export type RuleVerdict = z.infer<typeof ruleVerdictSchema>;
+export type Alerta = z.output<typeof alertaSchema>;
+export type ValidationResult = z.output<typeof validationResultSchema>;
+export type RuleVerdict = z.output<typeof ruleVerdictSchema>;
 
 /** Validates and parses an expense. */
 export function parseGasto(input: unknown): Gasto {

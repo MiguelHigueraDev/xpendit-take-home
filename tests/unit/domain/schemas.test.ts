@@ -6,6 +6,7 @@ import {
   parsePolitica,
   politicaSchema,
 } from "../../../src/domain/schemas.js";
+import { toMoney } from "../../../src/domain/money.js";
 import { ValidationError } from "../../../src/validation/errors.js";
 import { defaultPolitica, salesEmployee } from "../../fixtures.js";
 
@@ -78,6 +79,6 @@ describe("domain schemas", () => {
     const politica = parsePolitica(input);
     input.limites_por_categoria.food.aprobado_hasta = 999;
 
-    expect(politica.limites_por_categoria.food?.aprobado_hasta).toBe(100);
+    expect(politica.limites_por_categoria.food?.aprobado_hasta.equals(toMoney(100))).toBe(true);
   });
 });

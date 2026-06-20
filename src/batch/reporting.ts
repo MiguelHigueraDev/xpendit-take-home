@@ -41,7 +41,7 @@ export function renderAnalysisMarkdown(report: BatchAnalysisReport): string {
     .slice(0, 5)
     .map(
       (group) =>
-        `- **${group.monto} ${group.moneda}** el ${group.fecha}: ${group.gasto_ids.join(", ")}`,
+        `- **${group.monto.toString()} ${group.moneda}** el ${group.fecha}: ${group.gasto_ids.join(", ")}`,
     )
     .join("\n");
 

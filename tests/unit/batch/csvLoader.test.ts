@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { toMoney } from "../../../src/domain/money.js";
 import { loadExpensesFromCsv } from "../../../src/batch/csvLoader.js";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
@@ -22,7 +23,7 @@ describe("loadExpensesFromCsv", () => {
     const { rows } = loadExpensesFromCsv(sampleCsv);
     const negative = rows.find((row) => row.gasto.id === "g_005");
 
-    expect(negative?.gasto.monto).toBe(-25);
+    expect(negative?.gasto.monto.equals(toMoney(-25))).toBe(true);
   });
 
   it("collects malformed rows as errors", () => {

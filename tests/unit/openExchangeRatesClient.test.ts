@@ -1,4 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
+import { Decimal } from "decimal.js";
 import {
   ExchangeRateApiError,
   OpenExchangeRatesClient,
@@ -33,10 +34,10 @@ describe("OpenExchangeRatesClient", () => {
     const client = new OpenExchangeRatesClient({ appId, fetchFn });
     const rateSet = await client.fetchLatest();
 
-    expect(rateSet).toEqual({
-      base: "USD",
-      rates: { CLP: 900.1, MXN: 17.2, EUR: 0.92 },
-    });
+    expect(rateSet.base).toBe("USD");
+    expect(rateSet.rates.CLP?.equals(new Decimal("900.1"))).toBe(true);
+    expect(rateSet.rates.MXN?.equals(new Decimal("17.2"))).toBe(true);
+    expect(rateSet.rates.EUR?.equals(new Decimal("0.92"))).toBe(true);
     expect(fetchFn).toHaveBeenCalledOnce();
 
     const calledUrl = new URL(fetchFn.mock.calls[0]![0] as string);
@@ -57,11 +58,9 @@ describe("OpenExchangeRatesClient", () => {
     const client = new OpenExchangeRatesClient({ appId, fetchFn });
     const rateSet = await client.fetchHistorical("2026-05-20");
 
-    expect(rateSet).toEqual({
-      base: "USD",
-      rates: { CLP: 900 },
-      date: "2026-05-20",
-    });
+    expect(rateSet.base).toBe("USD");
+    expect(rateSet.rates.CLP?.equals(new Decimal("900"))).toBe(true);
+    expect(rateSet.date).toBe("2026-05-20");
 
     const calledUrl = new URL(fetchFn.mock.calls[0]![0] as string);
     expect(calledUrl.pathname).toBe("/api/historical/2026-05-20.json");

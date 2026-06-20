@@ -1,4 +1,4 @@
-import type { ZodType } from "zod";
+import type { ZodTypeAny, output } from "zod";
 import { ValidationError } from "./errors.js";
 
 /**
@@ -6,7 +6,10 @@ import { ValidationError } from "./errors.js";
  * @param schema - Zod schema to validate against.
  * @param input - Unknown input value.
  */
-export function parseOrThrow<T>(schema: ZodType<T>, input: unknown): T {
+export function parseOrThrow<S extends ZodTypeAny>(
+  schema: S,
+  input: unknown,
+): output<S> {
   const result = schema.safeParse(input);
   if (!result.success) {
     throw ValidationError.fromZodError(result.error);

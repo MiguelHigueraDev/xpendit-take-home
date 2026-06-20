@@ -1,6 +1,7 @@
 import { z } from "zod";
+import { positiveRateSchema } from "../domain/money.js";
 import { parseOrThrow } from "../validation/parse.js";
-import { exchangeRateSchema, isoDateStringSchema } from "../validation/primitives.js";
+import { isoDateStringSchema } from "../validation/primitives.js";
 
 /** Open Exchange Rates API error response body. */
 export const openExchangeRatesErrorSchema = z.object({
@@ -13,24 +14,24 @@ export const openExchangeRatesErrorSchema = z.object({
 /** Successful Open Exchange Rates API rate response body. */
 export const openExchangeRatesRateSetSchema = z.object({
   base: z.string().trim().min(1),
-  rates: z.record(z.string(), exchangeRateSchema),
+  rates: z.record(z.string(), positiveRateSchema),
   timestamp: z.number().optional(),
 });
 
 /** Exchange rate snapshot used by the application. */
 export const rateSetSchema = z.object({
   base: z.string().trim().min(1),
-  rates: z.record(z.string(), exchangeRateSchema),
+  rates: z.record(z.string(), positiveRateSchema),
   date: isoDateStringSchema.optional(),
 });
 
-export type OpenExchangeRatesErrorBody = z.infer<
+export type OpenExchangeRatesErrorBody = z.output<
   typeof openExchangeRatesErrorSchema
 >;
-export type OpenExchangeRatesRateSetBody = z.infer<
+export type OpenExchangeRatesRateSetBody = z.output<
   typeof openExchangeRatesRateSetSchema
 >;
-export type RateSet = z.infer<typeof rateSetSchema>;
+export type RateSet = z.output<typeof rateSetSchema>;
 
 /** Returns true when the body matches an Open Exchange Rates error response. */
 export function isOpenExchangeRatesErrorBody(

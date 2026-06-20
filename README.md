@@ -167,13 +167,23 @@ El analizador:
 
 **Resolución de estado final:** RECHAZADO > PENDIENTE > APROBADO. Si ninguna regla aplica, el estado por defecto es `PENDIENTE`.
 
+## Montos y precisión monetaria
+
+Los montos de gastos, límites de categoría y tablas de tasas de cambio se manejan con [`decimal.js`](https://mikemcl.github.io/decimal.js/) (`Money = Decimal`) para evitar errores de punto flotante en conversiones FX y comparaciones de límites.
+
+- Los montos pueden ingresarse como `number` o `string` en CSV, política y API; Zod los transforma a `Decimal` vía `moneySchema`.
+- Las conversiones de moneda se redondean a **4 decimales** (`ROUND_HALF_UP`), alineado con Open Exchange Rates.
+- Los umbrales de antigüedad (`pendiente_dias` / `rechazado_dias`) siguen siendo enteros (`number`), ya que representan días, no dinero.
+
+Helpers exportados desde `src/domain/money.ts`: `toMoney`, `roundMoney`, `moneyKey`, `moneySchema`, `positiveRateSchema`.
+
 ## Estructura del proyecto
 
 ```
 src/
   batch/           # CSV loader, anomalías, analizador, reporting, CLI
   config/          # Carga de .env (dotenv) y API key
-  domain/          # Tipos, schemas Zod y códigos de alerta
+  domain/          # Tipos, schemas Zod, money (decimal.js) y códigos de alerta
   rules/           # Reglas puras (antigüedad, categoría, centro de costo)
   services/        # Validador, cliente API, cache de tasas, reloj
 data/

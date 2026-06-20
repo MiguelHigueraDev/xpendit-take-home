@@ -1,4 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
+import { toMoney } from "../../src/domain/money.js";
 import { ExchangeRateService } from "../../src/services/exchangeRateService.js";
 import {
   ExchangeRateApiError,
@@ -27,7 +28,7 @@ describe("ExchangeRateService", () => {
     const service = new ExchangeRateService(client);
     const provider = await service.getProviderForDate("2026-05-20");
 
-    expect(provider.convert(81000, "CLP", "USD")).toBe(90);
+    expect(provider.convert(toMoney(81000), "CLP", "USD").toString()).toBe("90");
     expect(client.fetchHistorical).toHaveBeenCalledWith("2026-05-20");
   });
 
@@ -66,8 +67,8 @@ describe("ExchangeRateService", () => {
     const providerA = await service.getProviderForDate("2026-05-20");
     const providerB = await service.getProviderForDate("2026-05-21");
 
-    expect(providerA.convert(900, "CLP", "USD")).toBe(1);
-    expect(providerB.convert(910, "CLP", "USD")).toBe(1);
+    expect(providerA.convert(toMoney(900), "CLP", "USD").toString()).toBe("1");
+    expect(providerB.convert(toMoney(910), "CLP", "USD").toString()).toBe("1");
     expect(client.fetchHistorical).toHaveBeenCalledTimes(2);
   });
 
@@ -104,8 +105,8 @@ describe("ExchangeRateService", () => {
     const first = await service.getLatestProvider();
     const second = await service.getLatestProvider();
 
-    expect(first.convert(0.92, "EUR", "USD")).toBeCloseTo(1, 5);
-    expect(second.convert(0.92, "EUR", "USD")).toBeCloseTo(1, 5);
+    expect(first.convert(toMoney(0.92), "EUR", "USD").toString()).toBe("1");
+    expect(second.convert(toMoney(0.92), "EUR", "USD").toString()).toBe("1");
     expect(client.fetchLatest).toHaveBeenCalledTimes(1);
   });
 

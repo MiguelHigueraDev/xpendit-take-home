@@ -1,4 +1,5 @@
 import type { Alerta, Empleado, Estado, Gasto, ValidationResult } from "../domain/types.js";
+import type { Money } from "../domain/money.js";
 
 /** A successfully parsed CSV row with expense and employee data. */
 export interface ParsedExpenseRow {
@@ -27,7 +28,7 @@ export interface Anomaly {
 
 /** Group of expenses sharing identical monto, moneda, and fecha. */
 export interface DuplicateGroup {
-  monto: number;
+  monto: Money;
   moneda: string;
   fecha: string;
   gasto_ids: string[];

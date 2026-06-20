@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { toMoney } from "../../../src/domain/money.js";
 import {
   renderAnalysisMarkdown,
   renderConsoleSummary,
@@ -18,7 +19,7 @@ const sampleReport: BatchAnalysisReport = {
   results: [],
   duplicateGroups: [
     {
-      monto: 90,
+      monto: toMoney(90),
       moneda: "USD",
       fecha: "2026-06-09",
       gasto_ids: ["g_042", "g_043", "g_044"],
