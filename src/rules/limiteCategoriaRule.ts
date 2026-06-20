@@ -5,6 +5,16 @@ import {
 } from "../domain/codes.js";
 import type { Rule, RuleContext } from "../domain/types.js";
 
+/**
+ * Category limit rule: validates expense amount against per-category thresholds.
+ *
+ * Converts the expense amount to the policy base currency, then:
+ * - ≤ `aprobado_hasta` → APROBADO
+ * - ≤ `pendiente_hasta` → PENDIENTE
+ * - > `pendiente_hasta` → RECHAZADO
+ *
+ * Returns `null` when the category has no configured limit.
+ */
 export const evaluateLimiteCategoriaRule: Rule = (context: RuleContext) => {
   const { gasto, politica, convertToBaseCurrency } = context;
   const limite = politica.limites_por_categoria[gasto.categoria];

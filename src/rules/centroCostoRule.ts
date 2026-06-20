@@ -4,6 +4,12 @@ import {
 } from "../domain/codes.js";
 import type { Rule, RuleContext } from "../domain/types.js";
 
+/**
+ * Cost-center cross rule: rejects expenses where a category is prohibited
+ * for the employee's cost center.
+ *
+ * Returns `null` when no matching prohibition exists in the policy.
+ */
 export const evaluateCentroCostoRule: Rule = (context: RuleContext) => {
   const { gasto, empleado, politica } = context;
 

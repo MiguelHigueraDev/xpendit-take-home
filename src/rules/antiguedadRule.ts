@@ -6,6 +6,13 @@ import {
 import type { Rule, RuleContext } from "../domain/types.js";
 import { daysBetween, parseIsoDate } from "../services/clock.js";
 
+/**
+ * Age rule: validates how old an expense is relative to the reference date.
+ *
+ * - 0 to `pendiente_dias` → APROBADO
+ * - `pendiente_dias + 1` to `rechazado_dias` → PENDIENTE
+ * - beyond `rechazado_dias` → RECHAZADO
+ */
 export const evaluateAntiguedadRule: Rule = (context: RuleContext) => {
   const { gasto, politica, referenceDate } = context;
   const expenseDate = parseIsoDate(gasto.fecha);

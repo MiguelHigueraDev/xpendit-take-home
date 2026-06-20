@@ -13,17 +13,30 @@ import { SystemClock } from "./clock.js";
 import type { RateProvider } from "./rateProvider.js";
 import { resolveVerdicts } from "./verdictResolver.js";
 
+/** Configuration options for {@link ExpenseValidator}. */
 export interface ExpenseValidatorOptions {
+  /** Clock for determining expense age (defaults to {@link SystemClock}). */
   clock?: Clock;
+  /** Rate provider for currency conversion (required). */
   rateProvider: RateProvider;
+  /** Validation rules to apply (defaults to all three built-in rules). */
   rules?: Rule[];
 }
 
+/**
+ * Core expense validation engine.
+ *
+ * Runs all configured rules against an expense, resolves the final status
+ * by priority, and returns a structured {@link ValidationResult}.
+ */
 export class ExpenseValidator {
   private readonly clock: Clock;
   private readonly rateProvider: RateProvider;
   private readonly rules: Rule[];
 
+  /**
+   * @param options - Validator configuration.
+   */
   constructor(options: ExpenseValidatorOptions) {
     this.clock = options.clock ?? new SystemClock();
     this.rateProvider = options.rateProvider;
@@ -34,6 +47,14 @@ export class ExpenseValidator {
     ];
   }
 
+  /**
+   * Validates an expense against a policy.
+   *
+   * @param gasto - Expense to validate.
+   * @param empleado - Employee who reported the expense.
+   * @param politica - Company expense policy.
+   * @returns Structured validation result with status and alerts.
+   */
   validate(
     gasto: Gasto,
     empleado: Empleado,

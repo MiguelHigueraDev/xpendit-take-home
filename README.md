@@ -1,6 +1,6 @@
-# Xpendit Rules Engine — Parte 1
+# Xpendit Rules Engine
 
-Motor de reglas de gastos (lógica pura) para el desafío Xpendit. Valida gastos contra una política configurable y devuelve uno de tres estados: `APROBADO`, `PENDIENTE` o `RECHAZADO`.
+Motor de reglas de gastos para el desafío Xpendit. Valida gastos contra una política configurable y devuelve uno de tres estados: `APROBADO`, `PENDIENTE` o `RECHAZADO`.
 
 ## Requisitos
 
@@ -15,12 +15,14 @@ npm install
 
 ## Configuración
 
-La Parte 1 **no realiza llamadas de red**. Las tasas de cambio y la fecha de referencia se inyectan en el validador.
-
-El archivo `.env.example` incluye `OPEN_EXCHANGE_RATES_APP_ID` para las Partes 2 y 3. Copia `.env.example` a `.env` cuando implementes la integración con Open Exchange Rates:
+Copia `.env.example` a `.env` y agrega tu API key de Open Exchange Rates:
 
 ```bash
 cp .env.example .env
+```
+
+```env
+OPEN_EXCHANGE_RATES_APP_ID=your_app_id_here
 ```
 
 ## Ejecutar pruebas
@@ -43,7 +45,7 @@ npm run typecheck
 npm run build
 ```
 
-## Uso
+## Parte 1 — Validador con tasas mock
 
 ```typescript
 import {
@@ -90,6 +92,48 @@ const result = validator.validate(
 console.log(result);
 ```
 
+## Parte 2 — Tasas reales (Open Exchange Rates)
+
+El cliente API obtiene tasas históricas por fecha y construye un `InMemoryRateProvider` síncrono que se inyecta en el validador. El validador de la Parte 1 no cambia.
+
+```typescript
+import {
+  ExpenseValidator,
+  ExchangeRateService,
+  FixedClock,
+  OpenExchangeRatesClient,
+  getOpenExchangeRatesAppId,
+  loadEnv,
+} from "./dist/index.js";
+
+loadEnv();
+
+const client = new OpenExchangeRatesClient({
+  appId: getOpenExchangeRatesAppId(),
+});
+const rateService = new ExchangeRateService(client);
+
+// Una llamada API por fecha única (cache incluido)
+const rateProvider = await rateService.getProviderForDate("2026-05-20");
+
+const validator = new ExpenseValidator({
+  clock: new FixedClock(new Date("2026-06-19T00:00:00.000Z")),
+  rateProvider,
+});
+
+const result = validator.validate(gasto, empleado, politica);
+```
+
+### Demo con API real
+
+Con tu `.env` configurado:
+
+```bash
+npm run demo:rates
+```
+
+Esto valida un gasto en CLP usando tasas históricas del `2026-05-20`.
+
 ## Reglas implementadas
 
 | Regla | Condición | Resultado |
@@ -108,14 +152,18 @@ console.log(result);
 
 ```
 src/
+  config/          # Carga de .env (dotenv) y API key
   domain/          # Tipos y códigos de alerta
   rules/           # Reglas puras (antigüedad, categoría, centro de costo)
-  services/        # Validador, reloj, proveedor de tasas, resolver
+  services/        # Validador, cliente API, cache de tasas, reloj
+examples/
+  validateWithLiveRates.ts   # Demo Parte 2
 tests/
-  unit/            # Pruebas exhaustivas por regla e integración
+  unit/            # Pruebas exhaustivas (sin red)
 ```
 
-## Próximos pasos (Partes 2 y 3)
+## Próximos pasos (Parte 3)
 
-- **Parte 2:** Reemplazar `InMemoryRateProvider` con cliente real de Open Exchange Rates.
-- **Parte 3:** Script de análisis por lotes sobre `gastos_historicos.csv`.
+- Script de análisis por lotes sobre `gastos_historicos.csv`.
+- Detección de anomalías (duplicados, montos negativos).
+- Optimización: agrupar gastos por fecha y usar `ExchangeRateService.prewarm()`.

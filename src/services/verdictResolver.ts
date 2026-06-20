@@ -6,6 +6,15 @@ const STATUS_PRIORITY: Record<Estado, number> = {
   APROBADO: 1,
 };
 
+/**
+ * Aggregates partial rule verdicts into a final status and alert list.
+ *
+ * Priority: RECHAZADO > PENDIENTE > APROBADO.
+ * When no rules apply, defaults to PENDIENTE with no alerts.
+ *
+ * @param verdicts - Partial outcomes from all triggered rules.
+ * @returns Final status and all alerts from triggered rules.
+ */
 export function resolveVerdicts(verdicts: RuleVerdict[]): {
   status: Estado;
   alertas: Alerta[];
