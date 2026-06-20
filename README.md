@@ -191,6 +191,8 @@ data/
 examples/
   validateWithLiveRates.ts   # Demo Parte 2
 tests/
-  unit/            # Pruebas exhaustivas (sin red)
+  unit/            # Pruebas unitarias (sin red)
+  e2e/             # Pipeline completo sobre gastos_historicos.csv
+  helpers/         # Utilidades compartidas (mock rate resolver)
 ANALISIS.md        # Reporte generado por Parte 3
 ```

@@ -1,42 +1,21 @@
 import { describe, expect, it } from "vitest";
 import { BatchAnalyzer } from "../../../src/batch/batchAnalyzer.js";
-import { InMemoryRateProvider } from "../../../src/services/rateProvider.js";
 import { FixedClock } from "../../../src/services/clock.js";
-import { referenceDate, mockExchangeRates } from "../../fixtures.js";
+import { referenceDate } from "../../fixtures.js";
+import { createMockRateResolver } from "../../helpers/mockRateResolver.js";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
-import type { RateResolver } from "../../../src/batch/batchRateResolver.js";
 
 const sampleCsv = readFileSync(
   join(import.meta.dirname, "../../fixtures/sample-batch.csv"),
   "utf-8",
 );
 
-const mockRateResolver: RateResolver = {
-  async resolve(dates) {
-    const uniqueDates = [...new Set(dates)];
-    const providersByDate = new Map(
-      uniqueDates.map((date) => [
-        date,
-        new InMemoryRateProvider(mockExchangeRates, "USD"),
-      ]),
-    );
-
-    return {
-      providersByDate,
-      uniqueDates,
-      liveDates: [],
-      fallbackDates: uniqueDates,
-      apiCallCount: 0,
-    };
-  },
-};
-
 describe("BatchAnalyzer", () => {
   it("produces status breakdown and anomaly results end-to-end", async () => {
     const analyzer = new BatchAnalyzer({
       clock: new FixedClock(referenceDate),
-      rateResolver: mockRateResolver,
+      rateResolver: createMockRateResolver(),
     });
 
     const report = await analyzer.analyze(sampleCsv);
