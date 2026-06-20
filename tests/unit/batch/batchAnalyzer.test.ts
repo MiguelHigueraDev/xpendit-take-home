@@ -1,6 +1,7 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { BatchAnalyzer } from "../../../src/batch/batchAnalyzer.js";
 import { FixedClock } from "../../../src/services/clock.js";
+import { ExpenseValidator } from "../../../src/services/expenseValidator.js";
 import { referenceDate } from "../../fixtures.js";
 import { createMockRateResolver } from "../../helpers/mockRateResolver.js";
 import { readFileSync } from "node:fs";
@@ -35,5 +36,32 @@ describe("BatchAnalyzer", () => {
       (result) => result.gasto_id === "g_002",
     );
     expect(duplicateRow?.anomalies).toHaveLength(1);
+  });
+
+  it("reuses one ExpenseValidator per unique date", async () => {
+    let constructorCalls = 0;
+    const validateSpy = vi.spyOn(ExpenseValidator.prototype, "validate");
+    const OriginalExpenseValidator = ExpenseValidator;
+
+    vi.spyOn(
+      await import("../../../src/services/expenseValidator.js"),
+      "ExpenseValidator",
+    ).mockImplementation(function (...args) {
+      constructorCalls += 1;
+      return new OriginalExpenseValidator(...args);
+    });
+
+    const analyzer = new BatchAnalyzer({
+      clock: new FixedClock(referenceDate),
+      rateResolver: createMockRateResolver(),
+    });
+
+    await analyzer.analyze(sampleCsv);
+
+    expect(constructorCalls).toBe(2);
+    expect(validateSpy).toHaveBeenCalledTimes(5);
+
+    validateSpy.mockRestore();
+    vi.restoreAllMocks();
   });
 });

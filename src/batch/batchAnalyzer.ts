@@ -53,18 +53,24 @@ export class BatchAnalyzer {
       RECHAZADO: 0,
     };
 
+    const validatorsByDate = new Map<string, ExpenseValidator>();
+    for (const [fecha, rateProvider] of rateResolution.providersByDate) {
+      validatorsByDate.set(
+        fecha,
+        new ExpenseValidator({
+          clock: this.clock,
+          rateProvider,
+        }),
+      );
+    }
+
     const results: RowAnalysisResult[] = [];
 
     for (const row of rows) {
-      const rateProvider = rateResolution.providersByDate.get(row.gasto.fecha);
-      if (!rateProvider) {
+      const validator = validatorsByDate.get(row.gasto.fecha);
+      if (!validator) {
         throw new Error(`No rate provider found for date ${row.gasto.fecha}`);
       }
-
-      const validator = new ExpenseValidator({
-        clock: this.clock,
-        rateProvider,
-      });
 
       const validation = validator.validate(
         row.gasto,
