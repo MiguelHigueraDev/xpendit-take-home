@@ -31,3 +31,4 @@ export * from "./batch/anomalyDetector.js";
 export * from "./batch/batchRateResolver.js";
 export * from "./batch/batchAnalyzer.js";
 export * from "./batch/reporting.js";
+export * from "./batch/analyzeCli.js";
