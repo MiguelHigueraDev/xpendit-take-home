@@ -374,6 +374,20 @@ tests/
 ANALISIS.md        # Reporte generado por Parte 3
 ```
 
+## Demo opcional (bonus)
+
+Fuera del alcance del PDF, hay un demo full-stack mínimo en [`bonus-demo/`](bonus-demo/) que envuelve el motor existente:
+
+- **API:** NestJS + Fastify (`POST /api/validate`, `POST /api/analyze`, `GET /api/policy`)
+- **Web:** React + Vite (formulario de validación + upload de CSV)
+
+```bash
+npm run build
+cd bonus-demo && npm install && npm run dev
+```
+
+Ver [`bonus-demo/README.md`](bonus-demo/README.md) para detalles. Usa tasas offline, no requiere API key.
+
 ## Dependencias
 
 | Paquete | Por qué |
