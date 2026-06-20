@@ -3,6 +3,7 @@ import { GitBranch } from "lucide-react";
 import { AnalyzePanel } from "./components/analyze-panel.js";
 import { PolicySummary } from "./components/policy-summary.js";
 import { SiteHeader } from "./components/site-header.js";
+import { SiteFooter } from "./components/site-footer.js";
 import { ValidateForm } from "./components/validate-form.js";
 import {
   WorkflowSelector,
@@ -33,10 +34,10 @@ export function App() {
     : [];
 
   return (
-    <div className="min-h-screen">
+    <div className="flex min-h-screen flex-col">
       <SiteHeader />
 
-      <div className="bg-bg">
+      <div className="flex-1 bg-bg">
         <div className="mx-auto max-w-[900px] px-6 py-10 pb-16 max-[480px]:px-4 max-[480px]:py-7 max-[480px]:pb-12">
           <PolicySummary policy={policy} policyError={policyError} />
 
@@ -60,6 +61,8 @@ export function App() {
           </main>
         </div>
       </div>
+
+      <SiteFooter />
     </div>
   );
 }
