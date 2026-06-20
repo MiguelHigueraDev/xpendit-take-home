@@ -1,25 +1,12 @@
-import { ArrowUpRight, Sparkles } from "lucide-react";
+import { Sparkles } from "lucide-react";
+import xpenditLogo from "../../assets/xpendit-logo.svg";
 import { iconSm } from "../lib/icons.js";
 
 export function SiteHeader() {
   return (
     <header className="hero-bg text-white">
       <nav className="mx-auto flex max-w-[1080px] items-center justify-between px-6 py-5 max-[480px]:px-4">
-        <a
-          href="https://www.xpendit.com/"
-          target="_blank"
-          rel="noreferrer"
-          className="flex items-center gap-2 text-lg font-semibold tracking-tight text-white no-underline"
-        >
-          <span
-            aria-hidden="true"
-            className="inline-flex h-7 w-7 items-center justify-center rounded-md bg-white/10 text-sm font-bold"
-          >
-            x
-          </span>
-          xpendit
-          <ArrowUpRight className={`${iconSm} opacity-70`} aria-hidden="true" />
-        </a>
+        <img src={xpenditLogo} alt="Xpendit" className="h-4 w-auto" />
         <span className="rounded-full bg-lime px-3.5 py-1.5 text-xs font-semibold tracking-wide text-ink">
           Demo Bonus
         </span>

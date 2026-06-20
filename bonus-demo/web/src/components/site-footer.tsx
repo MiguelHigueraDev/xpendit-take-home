@@ -1,4 +1,5 @@
 import { ArrowUpRight, ShieldAlert } from "lucide-react";
+import xpenditLogo from "../../assets/xpendit-logo.svg";
 import { iconSm } from "../lib/icons.js";
 
 export function SiteFooter() {
@@ -25,24 +26,7 @@ export function SiteFooter() {
 
         <div className="mt-10 grid gap-8 border-t border-white/10 pt-10 sm:grid-cols-[1.2fr_1fr_1fr]">
           <div>
-            <a
-              href="https://www.xpendit.com/"
-              target="_blank"
-              rel="noreferrer"
-              className="inline-flex items-center gap-2 font-semibold tracking-tight text-white no-underline"
-            >
-              <span
-                aria-hidden="true"
-                className="inline-flex h-7 w-7 items-center justify-center rounded-md bg-white/10 text-sm font-bold"
-              >
-                x
-              </span>
-              xpendit
-              <ArrowUpRight
-                className={`${iconSm} opacity-70`}
-                aria-hidden="true"
-              />
-            </a>
+            <img src={xpenditLogo} alt="Xpendit" className="h-7 w-auto" />
             <p className="mt-3 max-w-xs text-sm leading-relaxed text-white/60">
               Motor de reglas — demo bonus para validar gastos y analizar lotes
               CSV vía HTTP.
