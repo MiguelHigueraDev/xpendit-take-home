@@ -77,4 +77,5 @@ export type ImmutablePolitica = Readonly<{
     cost_center: string;
     categoria_prohibida: string;
   }>[];
+  categoria_desconocida: "APROBADO" | "PENDIENTE" | "RECHAZADO";
 }>;

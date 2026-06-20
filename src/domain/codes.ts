@@ -6,6 +6,7 @@ export const ALERT_CODES = {
   LIMITE_ANTIGUEDAD: "LIMITE_ANTIGUEDAD",
   LIMITE_CATEGORIA: "LIMITE_CATEGORIA",
   POLITICA_CENTRO_COSTO: "POLITICA_CENTRO_COSTO",
+  NO_POLICY: "NO_POLICY",
   ANOMALIA_DUPLICADO: "ANOMALIA_DUPLICADO",
   ANOMALIA_MONTO_NEGATIVO: "ANOMALIA_MONTO_NEGATIVO",
 } as const;
@@ -69,6 +70,14 @@ export function buildPoliticaCentroCostoMessage(
   categoria: string,
 ): string {
   return `El C.C. '${costCenter}' no puede reportar '${categoria}'.`;
+}
+
+/**
+ * Builds the alert message when a category has no configured policy limits.
+ * @param categoria - Expense category without configured limits.
+ */
+export function buildNoPolicyMessage(categoria: string): string {
+  return `La categoría '${categoria}' no tiene política definida. Requiere revisión manual.`;
 }
 
 /**

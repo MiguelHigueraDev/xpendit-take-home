@@ -10,8 +10,8 @@
 
 | Estado | Cantidad |
 |--------|----------|
-| APROBADO | 13 |
-| PENDIENTE | 13 |
+| APROBADO | 9 |
+| PENDIENTE | 17 |
 | RECHAZADO | 24 |
 
 ## Anomalías detectadas
@@ -72,6 +72,6 @@ Cuando la API no está disponible o falla para una fecha, se usan tasas de respa
 
 ## Notas para el video (≤ 1 min)
 
-1. Presentar el desglose: 13 APROBADOS, 13 PENDIENTES, 24 RECHAZADOS.
+1. Presentar el desglose: 9 APROBADOS, 17 PENDIENTES, 24 RECHAZADOS.
 2. Mostrar duplicados: p.ej. `g_042`, `g_043`, `g_044` (90 USD, 2026-06-09).
 3. Explicar optimización: 50 filas → 25 fechas → 25 llamadas API.

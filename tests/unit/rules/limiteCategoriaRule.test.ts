@@ -17,13 +17,20 @@ describe("evaluateLimiteCategoriaRule", () => {
     convertToBaseCurrency: mockConvertToBaseCurrency,
   };
 
-  it("returns null when category has no configured limit", () => {
+  it("returns PENDIENTE with NO_POLICY when category has no configured limit", () => {
     const verdict = evaluateLimiteCategoriaRule({
       ...baseContext,
       gasto: createGasto({ categoria: "software" }),
     });
 
-    expect(verdict).toBeNull();
+    expect(verdict).toEqual({
+      status: "PENDIENTE",
+      alerta: {
+        codigo: ALERT_CODES.NO_POLICY,
+        mensaje:
+          "La categoría 'software' no tiene política definida. Requiere revisión manual.",
+      },
+    });
   });
 
   it("returns APROBADO when amount is at aprobado_hasta boundary", () => {

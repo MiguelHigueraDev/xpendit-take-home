@@ -60,6 +60,7 @@ export const politicaSchema = z.object({
   limite_antiguedad: limiteAntiguedadSchema,
   limites_por_categoria: z.record(z.string(), limiteCategoriaSchema),
   reglas_centro_costo: z.array(reglaCentroCostoSchema),
+  categoria_desconocida: estadoSchema.default("PENDIENTE"),
 });
 
 /** Structured alert on a validation result. */

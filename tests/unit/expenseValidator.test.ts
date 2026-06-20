@@ -107,7 +107,7 @@ describe("ExpenseValidator", () => {
     ]);
   });
 
-  it("returns APROBADO when only antiguedad applies and expense is recent", () => {
+  it("returns PENDIENTE with NO_POLICY for unconfigured categories", () => {
     const result = validator.validate(
       createGasto({
         id: "g_software",
@@ -121,8 +121,14 @@ describe("ExpenseValidator", () => {
 
     expect(result).toEqual({
       gasto_id: "g_software",
-      status: "APROBADO",
-      alertas: [],
+      status: "PENDIENTE",
+      alertas: [
+        {
+          codigo: ALERT_CODES.NO_POLICY,
+          mensaje:
+            "La categoría 'software' no tiene política definida. Requiere revisión manual.",
+        },
+      ],
     });
   });
 

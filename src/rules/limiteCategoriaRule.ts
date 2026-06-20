@@ -2,6 +2,7 @@ import {
   ALERT_CODES,
   buildLimiteCategoriaPendienteMessage,
   buildLimiteCategoriaRechazadoMessage,
+  buildNoPolicyMessage,
 } from "../domain/codes.js";
 import type { Rule, RuleContext } from "../domain/types.js";
 
@@ -13,14 +14,20 @@ import type { Rule, RuleContext } from "../domain/types.js";
  * - ≤ `pendiente_hasta` → PENDIENTE
  * - > `pendiente_hasta` → RECHAZADO
  *
- * Returns `null` when the category has no configured limit.
+ * Returns {@link ALERT_CODES.NO_POLICY} when the category has no configured limit.
  */
 export const evaluateLimiteCategoriaRule: Rule = (context: RuleContext) => {
   const { gasto, politica, convertToBaseCurrency } = context;
   const limite = politica.limites_por_categoria[gasto.categoria];
 
   if (!limite) {
-    return null;
+    return {
+      status: politica.categoria_desconocida,
+      alerta: {
+        codigo: ALERT_CODES.NO_POLICY,
+        mensaje: buildNoPolicyMessage(gasto.categoria),
+      },
+    };
   }
 
   const montoBase = convertToBaseCurrency(gasto.monto, gasto.moneda);
