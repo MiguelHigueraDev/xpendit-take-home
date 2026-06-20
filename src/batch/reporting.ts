@@ -147,7 +147,7 @@ En lugar de hacer una llamada a la API por cada fila del CSV (problema N+1), el 
 | Fechas con fallback | ${report.rateResolution.fallbackDates.length} |
 | Ahorro vs N+1 | ${report.validRows - report.rateResolution.apiCallCount} llamadas evitadas |
 
-Cuando la API no está disponible o falla para una fecha, se usan tasas de respaldo desde \`data/fallback-rates.json\`.
+En modo \`--mock\`, se usan tasas locales desde \`data/fallback-rates.json\` en lugar de la API.
 
 ## Notas para el video (≤ 1 min)
 

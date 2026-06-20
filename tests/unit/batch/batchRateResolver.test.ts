@@ -31,7 +31,7 @@ describe("BatchRateResolver", () => {
     expect(getProviderForDate).toHaveBeenCalledTimes(2);
   });
 
-  it("falls back to static rates when live service fails", async () => {
+  it("propagates API errors instead of falling back to static rates", async () => {
     const getProviderForDate = vi
       .fn()
       .mockRejectedValue(new Error("API unavailable"));
@@ -42,16 +42,9 @@ describe("BatchRateResolver", () => {
       fallbackRates,
     });
 
-    const result = await resolver.resolve(["2026-06-04"]);
-
-    expect(result.fallbackDates).toEqual(["2026-06-04"]);
-    expect(result.apiCallCount).toBe(0);
-    expect(
-      result.providersByDate
-        .get("2026-06-04")
-        ?.convert(toMoney(900), "CLP", "USD")
-        .toString(),
-    ).toBe("1");
+    await expect(resolver.resolve(["2026-06-04"])).rejects.toThrow(
+      "API unavailable",
+    );
   });
 
   it("uses fallback for all dates when no rate service is configured", async () => {

@@ -15,7 +15,7 @@ const fallbackRatesFileSchema = z.object({
   rates: z.record(z.string(), positiveRateSchema),
 });
 
-/** Resolves rate providers for a batch of dates with live API + fallback. */
+/** Resolves rate providers for a batch of dates via live API or mock rates. */
 export interface RateResolver {
   resolve(dates: string[]): Promise<BatchRateResolution>;
 }
@@ -23,13 +23,14 @@ export interface RateResolver {
 /** Options for {@link BatchRateResolver}. */
 export interface BatchRateResolverOptions {
   rateService?: ExchangeRateService | null;
-  fallbackRates: Record<string, Money>;
+  /** Required when `rateService` is null (mock/offline mode). */
+  fallbackRates?: Record<string, Money>;
   baseCurrency?: string;
 }
 
 /**
- * Fetches one rate provider per unique date via the live API,
- * falling back to static rates when the API is unavailable.
+ * Fetches one rate provider per unique date via the live API.
+ * When `rateService` is null, uses static fallback rates (mock/offline mode only).
  */
 export class BatchRateResolver implements RateResolver {
   private readonly rateService: ExchangeRateService | null;
@@ -38,7 +39,7 @@ export class BatchRateResolver implements RateResolver {
 
   constructor(options: BatchRateResolverOptions) {
     this.rateService = options.rateService ?? null;
-    this.fallbackRates = options.fallbackRates;
+    this.fallbackRates = options.fallbackRates ?? {};
     this.baseCurrency = options.baseCurrency ?? "USD";
   }
 
@@ -52,15 +53,11 @@ export class BatchRateResolver implements RateResolver {
 
     for (const date of uniqueDates) {
       if (this.rateService) {
-        try {
-          const provider = await this.rateService.getProviderForDate(date);
-          providersByDate.set(date, provider);
-          liveDates.push(date);
-          apiCallCount += 1;
-          continue;
-        } catch {
-          // Fall through to fallback for this date.
-        }
+        const provider = await this.rateService.getProviderForDate(date);
+        providersByDate.set(date, provider);
+        liveDates.push(date);
+        apiCallCount += 1;
+        continue;
       }
 
       providersByDate.set(

@@ -116,6 +116,18 @@ describe("E2E: analyze.ts CLI process", () => {
     });
   });
 
+  it("exits with code 1 when API key is missing without --mock", () => {
+    const result = runAnalyzeCli([
+      "-d",
+      "2026-06-19",
+      "-i",
+      join(projectRoot, "gastos_historicos.csv"),
+    ]);
+
+    expect(result.status).toBe(1);
+    expect(result.stderr).toContain("OPEN_EXCHANGE_RATES_APP_ID");
+  });
+
   it("exits with code 2 for unknown flags", () => {
     const result = runAnalyzeCli(["--not-a-real-flag"]);
 

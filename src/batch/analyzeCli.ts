@@ -1,6 +1,6 @@
 import { readFileSync, writeFileSync } from "node:fs";
 import { isAbsolute, resolve } from "node:path";
-import { loadEnv } from "../config/env.js";
+import { loadEnv, MissingApiKeyError } from "../config/env.js";
 import { parsePolitica } from "../domain/schemas.js";
 import type { Politica } from "../domain/types.js";
 import { FixedClock, parseIsoDate } from "../services/clock.js";
@@ -81,7 +81,7 @@ Opciones:
   -i, --input <path>          Ruta al archivo CSV
   -o, --output <path>         Ruta del reporte markdown
   -d, --reference-date <date> Fecha de referencia ISO (YYYY-MM-DD)
-  --mock, --offline            Usa solo tasas de respaldo (sin API)
+  --mock, --offline            Usa tasas de respaldo locales (sin API)
   --policy <path>             Archivo JSON con la política de gastos
   --fallback-rates <path>     Archivo JSON de tasas de respaldo
   --no-write                  No escribe el archivo de salida
@@ -260,11 +260,11 @@ export function createAnalyzeRateResolver(
     "readFile" | "loadEnv" | "getAppId" | "projectRoot"
   >,
 ): RateResolver {
-  const fallback = parseFallbackRatesFile(
-    deps.readFile(options.fallbackRatesPath, "utf-8"),
-  );
-
   if (options.mockRates) {
+    const fallback = parseFallbackRatesFile(
+      deps.readFile(options.fallbackRatesPath, "utf-8"),
+    );
+
     return new BatchRateResolver({
       rateService: null,
       fallbackRates: fallback.rates,
@@ -274,17 +274,15 @@ export function createAnalyzeRateResolver(
 
   deps.loadEnv();
   const appId = deps.getAppId();
-
-  let rateService: ExchangeRateService | null = null;
-  if (appId) {
-    const client = new OpenExchangeRatesClient({ appId });
-    rateService = new ExchangeRateService(client);
+  if (!appId) {
+    throw new MissingApiKeyError();
   }
+
+  const client = new OpenExchangeRatesClient({ appId });
+  const rateService = new ExchangeRateService(client);
 
   return new BatchRateResolver({
     rateService,
-    fallbackRates: fallback.rates,
-    baseCurrency: fallback.base,
   });
 }
 
@@ -370,7 +368,7 @@ export async function mainAnalyze(
       return 2;
     }
 
-    if (error instanceof ValidationError) {
+    if (error instanceof ValidationError || error instanceof MissingApiKeyError) {
       console.error(error.message);
       return 1;
     }

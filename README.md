@@ -169,7 +169,7 @@ La API de Open Exchange Rates es **asíncrona**, pero las reglas son **síncrona
 | 50 filas → 50 llamadas API | 50 filas → **25 fechas únicas** → **25 llamadas** |
 | Una llamada por gasto | Una llamada por fecha, reutilizada en todas las filas de ese día |
 
-**Fallback:** si no hay API key o la llamada falla, se usan tasas de `data/fallback-rates.json`. El analizador sigue funcionando offline (`--mock`).
+**Modo offline (`--mock`):** usa tasas locales de `data/fallback-rates.json` sin llamar a la API. Sin `--mock`, se requiere `OPEN_EXCHANGE_RATES_APP_ID` y cualquier fallo de la API detiene el análisis.
 
 ---
 
@@ -341,7 +341,7 @@ npm run analyze -- --policy mi-politica.json --json --mock
 | `-i, --input <path>` | Ruta al CSV |
 | `-o, --output <path>` | Ruta del reporte markdown |
 | `-d, --reference-date <date>` | Fecha de referencia ISO (`YYYY-MM-DD`) |
-| `--mock, --offline` | Solo tasas de `data/fallback-rates.json` |
+| `--mock, --offline` | Modo offline: tasas de `data/fallback-rates.json` (requerido sin API key) |
 | `--policy <path>` | Política JSON personalizada |
 | `--fallback-rates <path>` | Tasas de respaldo alternativas |
 | `--no-write` | No escribe `ANALISIS.md` |

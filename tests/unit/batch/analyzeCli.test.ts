@@ -11,6 +11,7 @@ import {
   runAnalyze,
   serializeBatchReport,
 } from "../../../src/batch/analyzeCli.js";
+import { MissingApiKeyError } from "../../../src/config/env.js";
 import { defaultPolitica } from "../../../src/batch/policy.js";
 import { referenceDate } from "../../fixtures.js";
 
@@ -220,24 +221,21 @@ describe("createAnalyzeRateResolver", () => {
     expect(resolver).toBeDefined();
   });
 
-  it("falls back when mock mode is disabled and app id is missing", async () => {
-    const resolver = createAnalyzeRateResolver(
-      {
-        mockRates: false,
-        fallbackRatesPath: "/project/data/fallback-rates.json",
-      },
-      {
-        projectRoot: "/project",
-        readFile,
-        loadEnv: vi.fn(),
-        getAppId: vi.fn(() => undefined),
-      },
-    );
-
-    const resolution = await resolver.resolve(["2026-06-04"]);
-
-    expect(resolution.apiCallCount).toBe(0);
-    expect(resolution.fallbackDates).toEqual(["2026-06-04"]);
+  it("throws when mock mode is disabled and app id is missing", () => {
+    expect(() =>
+      createAnalyzeRateResolver(
+        {
+          mockRates: false,
+          fallbackRatesPath: "/project/data/fallback-rates.json",
+        },
+        {
+          projectRoot: "/project",
+          readFile,
+          loadEnv: vi.fn(),
+          getAppId: vi.fn(() => undefined),
+        },
+      ),
+    ).toThrow(MissingApiKeyError);
   });
 });
 
@@ -596,6 +594,28 @@ describe("mainAnalyze", () => {
     expect(exitCode).toBe(0);
     expect(written.has(outputPath)).toBe(true);
     expect(String(logSpy.mock.calls.at(-1)?.[0])).toContain(outputPath);
+  });
+
+  it("exits with code 1 when API key is missing without --mock", async () => {
+    const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+    const { csvPath, outputPath, fallbackPath, deps } = createMainDeps();
+
+    const exitCode = await mainAnalyze(
+      [
+        "-i",
+        csvPath,
+        "-o",
+        outputPath,
+        "--fallback-rates",
+        fallbackPath,
+      ],
+      deps,
+    );
+
+    expect(exitCode).toBe(1);
+    expect(String(errorSpy.mock.calls[0]?.[0])).toContain(
+      "OPEN_EXCHANGE_RATES_APP_ID",
+    );
   });
 
   it("returns exit code 1 for invalid reference dates", async () => {
