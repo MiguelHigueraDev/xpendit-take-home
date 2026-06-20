@@ -13,10 +13,6 @@ export function SiteHeader() {
       </nav>
 
       <div className="mx-auto max-w-[1080px] px-6 pb-16 pt-4 text-center max-[480px]:px-4 max-[480px]:pb-12">
-        <p className="mb-4 inline-flex items-center justify-center gap-2 text-xs font-medium tracking-[0.14em] text-white/55 uppercase">
-          <Sparkles className={iconSm} aria-hidden="true" />
-          Control financiero con IA
-        </p>
         <h1 className="font-display mx-auto max-w-[16ch] text-[clamp(2.25rem,5.5vw,3.75rem)] leading-[1.05] font-medium tracking-tight [font-variation-settings:'opsz'_72]">
           Cada gasto,{" "}
           <em className="italic text-white/90">validado por política</em>
