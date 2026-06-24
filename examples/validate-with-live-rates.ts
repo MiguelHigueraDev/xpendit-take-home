@@ -6,31 +6,21 @@
  * Run with: `npm run demo:rates`
  */
 import {
+  defaultPolitica,
   ExpenseValidator,
   ExchangeRateService,
   FixedClock,
   OpenExchangeRatesClient,
   getOpenExchangeRatesAppId,
   loadEnv,
+  toMoney,
 } from "../src/index.js";
 
 loadEnv();
 
-const politica = {
-  moneda_base: "USD",
-  limite_antiguedad: { pendiente_dias: 30, rechazado_dias: 60 },
-  limites_por_categoria: {
-    food: { aprobado_hasta: 100, pendiente_hasta: 150 },
-    transport: { aprobado_hasta: 200, pendiente_hasta: 200 },
-  },
-  reglas_centro_costo: [
-    { cost_center: "core_engineering", categoria_prohibida: "food" },
-  ],
-};
-
 const gasto = {
   id: "g_004",
-  monto: 81000,
+  monto: toMoney(81000),
   moneda: "CLP",
   fecha: "2026-05-20",
   categoria: "food",
@@ -54,5 +44,5 @@ const validator = new ExpenseValidator({
   rateProvider,
 });
 
-const result = validator.validate(gasto, empleado, politica);
+const result = validator.validate(gasto, empleado, defaultPolitica);
 console.log(JSON.stringify(result, null, 2));
