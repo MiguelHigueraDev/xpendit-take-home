@@ -8,9 +8,11 @@ import {
 } from "lucide-react";
 import { validateExpense, type ValidationResult } from "../api.js";
 import { ValidationResultCard } from "./validation-result.js";
+import type { PoliticaResponse } from "../api.js";
 import {
   buttonClass,
   cardClass,
+  categoryLimitTooltip,
   errorClass,
   fieldsetClass,
   formRowClass,
@@ -39,10 +41,12 @@ const DEFAULT_FORM = {
 
 export function ValidateForm({
   categories,
+  categoryLimits,
   currencies,
   baseCurrency,
 }: {
   categories: string[];
+  categoryLimits?: PoliticaResponse["limites_por_categoria"];
   currencies: string[];
   baseCurrency?: string;
 }) {
@@ -172,16 +176,32 @@ export function ValidateForm({
                 <select
                   className={inputClass}
                   value={form.categoria}
+                  title={
+                    categoryLimits?.[form.categoria] && baseCurrency
+                      ? categoryLimitTooltip(
+                          categoryLimits[form.categoria],
+                          baseCurrency,
+                        )
+                      : undefined
+                  }
                   onChange={(event) =>
                     updateField("categoria", event.target.value)
                   }
                   required
                 >
-                  {categories.map((category) => (
-                    <option key={category} value={category}>
-                      {category}
-                    </option>
-                  ))}
+                  {categories.map((category) => {
+                    const limit = categoryLimits?.[category];
+                    const title =
+                      limit && baseCurrency
+                        ? categoryLimitTooltip(limit, baseCurrency)
+                        : undefined;
+
+                    return (
+                      <option key={category} value={category} title={title}>
+                        {category}
+                      </option>
+                    );
+                  })}
                 </select>
               ) : (
                 <input

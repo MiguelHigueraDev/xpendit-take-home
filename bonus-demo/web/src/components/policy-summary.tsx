@@ -1,6 +1,11 @@
 import { ChevronDown } from "lucide-react";
 import type { PoliticaResponse } from "../api.js";
-import { errorClass, mutedClass, sectionEyebrowClass } from "../lib/ui.js";
+import {
+  categoryLimitTooltip,
+  errorClass,
+  mutedClass,
+  sectionEyebrowClass,
+} from "../lib/ui.js";
 import { iconMd } from "../lib/icons.js";
 
 export function PolicySummary({
@@ -53,7 +58,11 @@ export function PolicySummary({
                   {categories.map((category) => (
                     <span
                       key={category}
-                      className="inline-block rounded-full bg-lime-soft px-2.5 py-0.5 text-xs font-semibold text-teal-deep"
+                      title={categoryLimitTooltip(
+                        policy.limites_por_categoria[category],
+                        policy.moneda_base,
+                      )}
+                      className="inline-block cursor-help rounded-full bg-lime-soft px-2.5 py-0.5 text-xs font-semibold text-teal-deep"
                     >
                       {category}
                     </span>

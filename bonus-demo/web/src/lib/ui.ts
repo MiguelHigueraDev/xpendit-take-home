@@ -1,4 +1,11 @@
-import type { Estado } from "../api.js";
+import type { Estado, PoliticaResponse } from "../api.js";
+
+export function categoryLimitTooltip(
+  limit: PoliticaResponse["limites_por_categoria"][string],
+  monedaBase: string,
+): string {
+  return `Aprobado hasta ${limit.aprobado_hasta} ${monedaBase} · Pendiente hasta ${limit.pendiente_hasta} ${monedaBase}`;
+}
 
 export const sectionEyebrowClass =
   "mb-3 text-xs font-medium tracking-[0.14em] text-ink-muted uppercase";

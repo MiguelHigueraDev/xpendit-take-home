@@ -54,6 +54,7 @@ export function App() {
             {workflow === "validate" ? (
               <ValidateForm
                 categories={categories}
+                categoryLimits={policy?.limites_por_categoria}
                 currencies={currencies}
                 baseCurrency={policy?.moneda_base}
               />
