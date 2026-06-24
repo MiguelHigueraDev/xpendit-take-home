@@ -30,6 +30,7 @@ describe("EngineService", () => {
       const policy = service.getPolicy();
 
       expect(policy.moneda_base).toBe(defaultPolitica.moneda_base);
+      expect(policy.monedas_disponibles).toEqual(["CLP", "EUR", "MXN", "USD"]);
       expect(policy.limite_antiguedad).toEqual(defaultPolitica.limite_antiguedad);
       expect(policy.reglas_centro_costo).toEqual(defaultPolitica.reglas_centro_costo);
       expect(policy.categoria_desconocida).toBe(defaultPolitica.categoria_desconocida);

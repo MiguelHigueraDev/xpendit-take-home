@@ -32,6 +32,7 @@ export function App() {
   const categories = policy
     ? Object.keys(policy.limites_por_categoria)
     : [];
+  const currencies = policy?.monedas_disponibles ?? [];
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -53,6 +54,7 @@ export function App() {
             {workflow === "validate" ? (
               <ValidateForm
                 categories={categories}
+                currencies={currencies}
                 baseCurrency={policy?.moneda_base}
               />
             ) : (

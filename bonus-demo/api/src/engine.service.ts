@@ -51,7 +51,15 @@ export class EngineService {
   private readonly fallbackRates = loadFallbackRates();
 
   getPolicy(): Record<string, unknown> {
-    return serializePolitica(defaultPolitica);
+    const monedasDisponibles = [
+      this.fallbackRates.base,
+      ...Object.keys(this.fallbackRates.rates),
+    ].sort();
+
+    return {
+      ...serializePolitica(defaultPolitica),
+      monedas_disponibles: monedasDisponibles,
+    };
   }
 
   validate(request: ValidateRequestDto): ValidationResult {

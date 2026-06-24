@@ -30,6 +30,7 @@ export interface ValidateRequest {
 
 export interface PoliticaResponse {
   moneda_base: string;
+  monedas_disponibles: string[];
   limite_antiguedad: {
     pendiente_dias: number;
     rechazado_dias: number;

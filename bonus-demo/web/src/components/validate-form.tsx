@@ -39,9 +39,11 @@ const DEFAULT_FORM = {
 
 export function ValidateForm({
   categories,
+  currencies,
   baseCurrency,
 }: {
   categories: string[];
+  currencies: string[];
   baseCurrency?: string;
 }) {
   const [form, setForm] = useState(DEFAULT_FORM);
@@ -126,15 +128,32 @@ export function ValidateForm({
               </label>
               <label className={labelClass}>
                 Moneda
-                <input
-                  className={inputClass}
-                  value={form.moneda}
-                  onChange={(event) =>
-                    updateField("moneda", event.target.value)
-                  }
-                  placeholder={baseCurrency ?? "USD"}
-                  required
-                />
+                {currencies.length > 0 ? (
+                  <select
+                    className={inputClass}
+                    value={form.moneda}
+                    onChange={(event) =>
+                      updateField("moneda", event.target.value)
+                    }
+                    required
+                  >
+                    {currencies.map((currency) => (
+                      <option key={currency} value={currency}>
+                        {currency}
+                      </option>
+                    ))}
+                  </select>
+                ) : (
+                  <input
+                    className={inputClass}
+                    value={form.moneda}
+                    onChange={(event) =>
+                      updateField("moneda", event.target.value)
+                    }
+                    placeholder={baseCurrency ?? "USD"}
+                    required
+                  />
+                )}
               </label>
               <label className={labelClass}>
                 Fecha
