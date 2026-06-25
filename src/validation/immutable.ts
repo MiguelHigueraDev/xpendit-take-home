@@ -1,18 +1,26 @@
 import { Decimal } from "decimal.js";
-import type { Money } from "../domain/money.js";
+
+/** Compile-time mirror of {@link deepFreeze} — preserves Decimal leaves as-is. */
+export type DeepReadonly<T> = T extends Decimal
+  ? T
+  : T extends readonly (infer U)[]
+    ? readonly DeepReadonly<U>[]
+    : T extends object
+      ? { readonly [K in keyof T]: DeepReadonly<T[K]> }
+      : T;
 
 /**
  * Recursively freezes an object and all nested objects/arrays.
  * @param value - Value to freeze.
  * @returns The same value, now deeply frozen.
  */
-export function deepFreeze<T>(value: T): Readonly<T> {
+export function deepFreeze<T>(value: T): DeepReadonly<T> {
   if (value === null || typeof value !== "object") {
-    return value;
+    return value as DeepReadonly<T>;
   }
 
   if (value instanceof Decimal) {
-    return value;
+    return value as DeepReadonly<T>;
   }
 
   Object.freeze(value);
@@ -29,7 +37,7 @@ export function deepFreeze<T>(value: T): Readonly<T> {
     }
   }
 
-  return value;
+  return value as DeepReadonly<T>;
 }
 
 /**
@@ -56,26 +64,3 @@ export function deepClone<T>(value: T): T {
 
   return cloned as T;
 }
-
-/** Deeply readonly policy shape enforced at runtime via {@link deepFreeze}. */
-export type ImmutablePolitica = Readonly<{
-  moneda_base: string;
-  limite_antiguedad: Readonly<{
-    pendiente_dias: number;
-    rechazado_dias: number;
-  }>;
-  limites_por_categoria: Readonly<
-    Record<
-      string,
-      Readonly<{
-        aprobado_hasta: Money;
-        pendiente_hasta: Money;
-      }>
-    >
-  >;
-  reglas_centro_costo: readonly Readonly<{
-    cost_center: string;
-    categoria_prohibida: string;
-  }>[];
-  categoria_desconocida: "APROBADO" | "PENDIENTE" | "RECHAZADO";
-}>;

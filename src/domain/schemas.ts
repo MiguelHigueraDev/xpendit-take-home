@@ -3,10 +3,13 @@ import { moneySchema } from "./money.js";
 import {
   deepClone,
   deepFreeze,
-  type ImmutablePolitica,
+  type DeepReadonly,
 } from "../validation/immutable.js";
 import { parseOrThrow } from "../validation/parse.js";
-import { currencyCodeSchema, isoDateStringSchema } from "../validation/primitives.js";
+import {
+  currencyCodeSchema,
+  isoDateStringSchema,
+} from "../validation/primitives.js";
 
 /** Validation status enum. */
 export const estadoSchema = z.enum(["APROBADO", "PENDIENTE", "RECHAZADO"]);
@@ -51,7 +54,10 @@ export const limiteCategoriaSchema = z
 /** Cost-center cross rule prohibiting a category. */
 export const reglaCentroCostoSchema = z.object({
   cost_center: z.string().trim().min(1, "Cost center is required"),
-  categoria_prohibida: z.string().trim().min(1, "Prohibited category is required"),
+  categoria_prohibida: z
+    .string()
+    .trim()
+    .min(1, "Prohibited category is required"),
 });
 
 /** Company expense policy. */
@@ -88,7 +94,7 @@ export type Empleado = z.output<typeof empleadoSchema>;
 export type LimiteAntiguedad = z.output<typeof limiteAntiguedadSchema>;
 export type LimiteCategoria = z.output<typeof limiteCategoriaSchema>;
 export type ReglaCentroCosto = z.output<typeof reglaCentroCostoSchema>;
-export type Politica = ImmutablePolitica;
+export type Politica = DeepReadonly<z.output<typeof politicaSchema>>;
 export type Alerta = z.output<typeof alertaSchema>;
 export type ValidationResult = z.output<typeof validationResultSchema>;
 export type RuleVerdict = z.output<typeof ruleVerdictSchema>;
