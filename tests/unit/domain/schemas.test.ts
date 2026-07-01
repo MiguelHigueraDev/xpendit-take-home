@@ -47,6 +47,7 @@ describe("domain schemas", () => {
 
     expect(Object.isFrozen(politica)).toBe(true);
     expect(Object.isFrozen(politica.limite_antiguedad)).toBe(true);
+    expect(Object.isFrozen(politica.limite_mensual)).toBe(true);
     expect(Object.isFrozen(politica.limites_por_categoria)).toBe(true);
     expect(Object.isFrozen(politica.limites_por_categoria.food)).toBe(true);
     expect(Object.isFrozen(politica.reglas_centro_costo)).toBe(true);
@@ -68,6 +69,7 @@ describe("domain schemas", () => {
     const input = {
       moneda_base: "USD",
       limite_antiguedad: { pendiente_dias: 30, rechazado_dias: 60 },
+      limite_mensual: { limite_total: 2000, ventana_dias: 30 },
       limites_por_categoria: {
         food: { aprobado_hasta: 100, pendiente_hasta: 150 },
       },

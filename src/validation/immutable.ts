@@ -64,6 +64,10 @@ export type ImmutablePolitica = Readonly<{
     pendiente_dias: number;
     rechazado_dias: number;
   }>;
+  limite_mensual: Readonly<{
+    limite_total: Money;
+    ventana_dias: number;
+  }>;
   limites_por_categoria: Readonly<
     Record<
       string,

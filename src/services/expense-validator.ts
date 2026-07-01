@@ -15,6 +15,7 @@ import type {
 import { evaluateAntiguedadRule } from "../rules/antiguedad-rule.js";
 import { evaluateCentroCostoRule } from "../rules/centro-costo-rule.js";
 import { evaluateLimiteCategoriaRule } from "../rules/limite-categoria-rule.js";
+import { evaluateLimiteMensualRule } from "../rules/limite-mensual-rule.js";
 import type { Clock } from "./clock.js";
 import { SystemClock } from "./clock.js";
 import type { RateProvider } from "./rate-provider.js";
@@ -26,8 +27,15 @@ export interface ExpenseValidatorOptions {
   clock?: Clock;
   /** Rate provider for currency conversion (required). */
   rateProvider: RateProvider;
-  /** Validation rules to apply (defaults to all three built-in rules). */
+  /** Validation rules to apply (defaults to all built-in rules). */
   rules?: Rule[];
+  /**
+   * Flat list of prior expenses for rolling-window limit checks.
+   * Prefer {@link historicalExpensesByEmployee} in batch contexts.
+   */
+  historicalExpenses?: Gasto[];
+  /** Employee-scoped prior expenses for rolling-window limit checks. */
+  historicalExpensesByEmployee?: Map<string, Gasto[]>;
 }
 
 /**
@@ -40,6 +48,8 @@ export class ExpenseValidator {
   private readonly clock: Clock;
   private readonly rateProvider: RateProvider;
   private readonly rules: Rule[];
+  private readonly historicalExpenses: Gasto[];
+  private readonly historicalExpensesByEmployee: Map<string, Gasto[]>;
 
   /**
    * @param options - Validator configuration.
@@ -47,9 +57,13 @@ export class ExpenseValidator {
   constructor(options: ExpenseValidatorOptions) {
     this.clock = options.clock ?? new SystemClock();
     this.rateProvider = options.rateProvider;
+    this.historicalExpenses = options.historicalExpenses ?? [];
+    this.historicalExpensesByEmployee =
+      options.historicalExpensesByEmployee ?? new Map();
     this.rules = options.rules ?? [
       evaluateAntiguedadRule,
       evaluateLimiteCategoriaRule,
+      evaluateLimiteMensualRule,
       evaluateCentroCostoRule,
     ];
   }
@@ -80,12 +94,19 @@ export class ExpenseValidator {
         validatedPolitica.moneda_base,
       );
 
+    const gastosEmpleado =
+      this.historicalExpensesByEmployee.get(validatedEmpleado.id) ??
+      this.historicalExpenses;
+
     const context = {
       gasto: validatedGasto,
       empleado: validatedEmpleado,
       politica: validatedPolitica,
       referenceDate,
       convertToBaseCurrency,
+      gastosEmpleado: gastosEmpleado.filter(
+        (gasto) => gasto.id !== validatedGasto.id,
+      ),
     };
 
     const verdicts = this.rules

@@ -1,5 +1,6 @@
-import type { Politica } from "../domain/types.js";
+import { buildEmployeeExpenseIndex } from "./employee-expense-index.js";
 import { parsePolitica } from "../domain/schemas.js";
+import type { Politica } from "../domain/types.js";
 import type { Clock } from "../services/clock.js";
 import { FixedClock } from "../services/clock.js";
 import { ExpenseValidator } from "../services/expense-validator.js";
@@ -53,6 +54,8 @@ export class BatchAnalyzer {
       RECHAZADO: 0,
     };
 
+    const employeeExpenseIndex = buildEmployeeExpenseIndex(rows);
+
     const validatorsByDate = new Map<string, ExpenseValidator>();
     for (const [fecha, rateProvider] of rateResolution.providersByDate) {
       validatorsByDate.set(
@@ -60,6 +63,7 @@ export class BatchAnalyzer {
         new ExpenseValidator({
           clock: this.clock,
           rateProvider,
+          historicalExpensesByEmployee: employeeExpenseIndex,
         }),
       );
     }

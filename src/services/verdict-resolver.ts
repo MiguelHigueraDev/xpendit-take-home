@@ -21,6 +21,7 @@ const resolveVerdictsInputSchema = z.array(
  *
  * Priority: RECHAZADO > PENDIENTE > APROBADO.
  * When no rules apply, defaults to PENDIENTE with no alerts.
+ * Returns all alerts from triggered rules.
  *
  * @param verdicts - Partial outcomes from all triggered rules.
  * @returns Final status and all alerts from triggered rules.

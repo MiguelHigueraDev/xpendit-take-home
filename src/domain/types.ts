@@ -13,6 +13,7 @@ export type {
   Gasto,
   LimiteAntiguedad,
   LimiteCategoria,
+  LimiteMensual,
   Politica,
   ReglaCentroCosto,
   RuleVerdict,
@@ -35,6 +36,11 @@ export interface RuleContext {
    * @param fromCurrency - ISO currency code of the source amount.
    */
   convertToBaseCurrency: (amount: Money, fromCurrency: string) => Money;
+  /**
+   * Prior expenses from the same employee, used by rolling-window limit rules.
+   * When omitted, only the current expense is considered.
+   */
+  gastosEmpleado?: Gasto[];
 }
 
 /**

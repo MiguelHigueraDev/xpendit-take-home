@@ -48,6 +48,12 @@ export const limiteCategoriaSchema = z
     message: "aprobado_hasta must be less than or equal to pendiente_hasta",
   });
 
+/** Rolling monthly spending limit per employee. */
+export const limiteMensualSchema = z.object({
+  limite_total: moneySchema,
+  ventana_dias: z.number().int().positive(),
+});
+
 /** Cost-center cross rule prohibiting a category. */
 export const reglaCentroCostoSchema = z.object({
   cost_center: z.string().trim().min(1, "Cost center is required"),
@@ -58,6 +64,7 @@ export const reglaCentroCostoSchema = z.object({
 export const politicaSchema = z.object({
   moneda_base: currencyCodeSchema,
   limite_antiguedad: limiteAntiguedadSchema,
+  limite_mensual: limiteMensualSchema,
   limites_por_categoria: z.record(z.string(), limiteCategoriaSchema),
   reglas_centro_costo: z.array(reglaCentroCostoSchema),
   categoria_desconocida: estadoSchema.default("PENDIENTE"),
@@ -86,6 +93,7 @@ export type Estado = z.output<typeof estadoSchema>;
 export type Gasto = z.output<typeof gastoSchema>;
 export type Empleado = z.output<typeof empleadoSchema>;
 export type LimiteAntiguedad = z.output<typeof limiteAntiguedadSchema>;
+export type LimiteMensual = z.output<typeof limiteMensualSchema>;
 export type LimiteCategoria = z.output<typeof limiteCategoriaSchema>;
 export type ReglaCentroCosto = z.output<typeof reglaCentroCostoSchema>;
 export type Politica = ImmutablePolitica;

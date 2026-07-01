@@ -4,6 +4,10 @@
     "pendiente_dias": 30,
     "rechazado_dias": 60
   },
+  "limite_mensual": {
+    "limite_total": 2000,
+    "ventana_dias": 30
+  },
   "limites_por_categoria": {
     "food": {
       "aprobado_hasta": 100,

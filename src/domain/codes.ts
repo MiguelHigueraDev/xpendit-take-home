@@ -5,6 +5,7 @@ import { formatMoney } from "./money.js";
 export const ALERT_CODES = {
   LIMITE_ANTIGUEDAD: "LIMITE_ANTIGUEDAD",
   LIMITE_CATEGORIA: "LIMITE_CATEGORIA",
+  LIMITE_MENSUAL_EXCEDIDO: "LIMITE_MENSUAL_EXCEDIDO",
   POLITICA_CENTRO_COSTO: "POLITICA_CENTRO_COSTO",
   NO_POLICY: "NO_POLICY",
   ANOMALIA_DUPLICADO: "ANOMALIA_DUPLICADO",
@@ -66,6 +67,20 @@ export function buildLimiteCategoriaRechazadoMessage(
   monedaBase: string,
 ): string {
   return `Gasto de '${categoria}' excede el límite de ${formatMoney(pendienteHasta)} ${monedaBase}. Excede límite aprobado.`;
+}
+
+/**
+ * Builds the RECHAZADO alert message for the monthly rolling limit rule.
+ * @param limiteTotal - Maximum allowed total in base currency.
+ * @param ventanaDias - Rolling window length in calendar days.
+ * @param monedaBase - Policy base currency code.
+ */
+export function buildLimiteMensualExcedidoMessage(
+  limiteTotal: Money,
+  ventanaDias: number,
+  monedaBase: string,
+): string {
+  return `El empleado excede el límite de ${formatMoney(limiteTotal)} ${monedaBase} en ${ventanaDias} días.`;
 }
 
 /**
